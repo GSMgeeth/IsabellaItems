@@ -180,6 +180,7 @@
             this.showAllBtn.TabIndex = 6;
             this.showAllBtn.Text = "Show All";
             this.showAllBtn.UseVisualStyleBackColor = true;
+            this.showAllBtn.Click += new System.EventHandler(this.showAllBtn_Click);
             // 
             // searchBtn
             // 
@@ -190,6 +191,7 @@
             this.searchBtn.TabIndex = 5;
             this.searchBtn.Text = "Search";
             this.searchBtn.UseVisualStyleBackColor = true;
+            this.searchBtn.Click += new System.EventHandler(this.searchBtn_Click);
             // 
             // label2
             // 

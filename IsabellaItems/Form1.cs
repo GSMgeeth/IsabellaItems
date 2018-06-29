@@ -201,5 +201,181 @@ namespace IsabellaItems
                 MessageBox.Show("Something wrong with the excel file!", "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }*/
         }
+
+        private void searchBtn_Click(object sender, EventArgs e)
+        {
+            string deptName = "Die";
+            DateTime date = datePicker.Value;
+            string qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.date='" + date.ToString("yyyy/M/d") + "'";
+
+            Object tmpDeptNameObj = deptCmb.SelectedItem;
+            string color = searchColortxt.Text;
+            string size = searchSizeTxt.Text;
+            string article = searchArticleTxt.Text;
+
+            if ((tmpDeptNameObj == null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+            {
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj != null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+            {
+                deptName = deptCmb.SelectedItem.ToString();
+
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on d.deptNo=i.deptNo " +
+                                                          "where d.deptName='" + deptName + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj == null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+            {
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.color='" + color + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj == null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+            {
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.size='" + size + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj == null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+            {
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.article='" + article + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj == null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+            {
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.size='" + size + "' and i.color='" + color + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj == null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+            {
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.article='" + article + "' and i.color='" + color + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj == null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+            {
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on i.deptNo=d.deptNo " +
+                                                          "where i.size='" + size + "' and i.article='" + article + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj != null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+            {
+                deptName = deptCmb.SelectedItem.ToString();
+
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on d.deptNo=i.deptNo " +
+                                                          "where i.color='" + color + "' and d.deptName='" + deptName + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj != null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+            {
+                deptName = deptCmb.SelectedItem.ToString();
+
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on d.deptNo=i.deptNo " +
+                                                          "where i.size='" + size + "' and d.deptName='" + deptName + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj != null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+            {
+                deptName = deptCmb.SelectedItem.ToString();
+
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on d.deptNo=i.deptNo " +
+                                                          "where i.article='" + article + "' and d.deptName='" + deptName + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj != null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+            {
+                deptName = deptCmb.SelectedItem.ToString();
+
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on d.deptNo=i.deptNo " +
+                                                          "where i.color='" + color + "' and i.size='" + size + "' and " +
+                                                          "d.deptName='" + deptName + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj != null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+            {
+                deptName = deptCmb.SelectedItem.ToString();
+
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on d.deptNo=i.deptNo " +
+                                                          "where i.color='" + color + "' and i.article='" + article + "' and " +
+                                                          "d.deptName='" + deptName + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+            else if ((tmpDeptNameObj != null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+            {
+                deptName = deptCmb.SelectedItem.ToString();
+
+                qry = "select i.item_id, i.color, i.size, i.article, d.deptName, i.date, i.issued, p.place " +
+                                                          "from item i left join issuedTo p on p.place_id=i.place_id " +
+                                                          "inner join department d on d.deptNo=i.deptNo " +
+                                                          "where i.article='" + article + "' and i.size='" + size + "' and " +
+                                                          "d.deptName='" + deptName + "' and " +
+                                                          "i.date='" + date.ToString("yyyy/M/d") + "'";
+            }
+
+            try
+            {
+                MySqlDataReader reader = DBConnection.getData(qry);
+
+                if (reader.HasRows)
+                {
+                    System.Data.DataTable table = new System.Data.DataTable();
+
+                    table.Load(reader);
+
+                    itemDataGridView.DataSource = table;
+                }
+                else
+                {
+                    reader.Close();
+                    MessageBox.Show("No records for this data!", "Items finder", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Invalid data!", "Items finder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void showAllBtn_Click(object sender, EventArgs e)
+        {
+            deptCmb.SelectedIndex = -1;
+            searchColortxt.Clear();
+            searchSizeTxt.Clear();
+            searchArticleTxt.Clear();
+            itemDataGridView.DataSource = getItems();
+        }
     }
 }
