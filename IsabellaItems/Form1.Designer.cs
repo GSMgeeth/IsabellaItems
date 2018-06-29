@@ -55,14 +55,14 @@
             this.label4 = new System.Windows.Forms.Label();
             this.dateTimePickerForDailyReport = new System.Windows.Forms.DateTimePicker();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewDept = new System.Windows.Forms.DataGridView();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewIssuedPlace = new System.Windows.Forms.DataGridView();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -77,8 +77,8 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDept)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -291,6 +291,10 @@
             // typeForMonthlyReport
             // 
             this.typeForMonthlyReport.FormattingEnabled = true;
+            this.typeForMonthlyReport.Items.AddRange(new object[] {
+            "All",
+            "Received",
+            "Issued"});
             this.typeForMonthlyReport.Location = new System.Drawing.Point(296, 75);
             this.typeForMonthlyReport.Name = "typeForMonthlyReport";
             this.typeForMonthlyReport.Size = new System.Drawing.Size(169, 24);
@@ -319,6 +323,10 @@
             // typeForDailyReport
             // 
             this.typeForDailyReport.FormattingEnabled = true;
+            this.typeForDailyReport.Items.AddRange(new object[] {
+            "All",
+            "Received",
+            "Issued"});
             this.typeForDailyReport.Location = new System.Drawing.Point(296, 168);
             this.typeForDailyReport.Name = "typeForDailyReport";
             this.typeForDailyReport.Size = new System.Drawing.Size(169, 24);
@@ -352,29 +360,29 @@
             this.splitContainer1.Panel1.Controls.Add(this.label5);
             this.splitContainer1.Panel1.Controls.Add(this.button1);
             this.splitContainer1.Panel1.Controls.Add(this.textBox1);
-            this.splitContainer1.Panel1.Controls.Add(this.dataGridView1);
+            this.splitContainer1.Panel1.Controls.Add(this.dataGridViewDept);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.label6);
             this.splitContainer1.Panel2.Controls.Add(this.button2);
             this.splitContainer1.Panel2.Controls.Add(this.textBox2);
-            this.splitContainer1.Panel2.Controls.Add(this.dataGridView2);
+            this.splitContainer1.Panel2.Controls.Add(this.dataGridViewIssuedPlace);
             this.splitContainer1.Size = new System.Drawing.Size(1167, 597);
             this.splitContainer1.SplitterDistance = 576;
             this.splitContainer1.TabIndex = 0;
             // 
-            // dataGridView1
+            // dataGridViewDept
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(9, 225);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(522, 365);
-            this.dataGridView1.TabIndex = 0;
+            this.dataGridViewDept.AllowUserToAddRows = false;
+            this.dataGridViewDept.AllowUserToDeleteRows = false;
+            this.dataGridViewDept.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDept.Location = new System.Drawing.Point(9, 225);
+            this.dataGridViewDept.Name = "dataGridViewDept";
+            this.dataGridViewDept.ReadOnly = true;
+            this.dataGridViewDept.RowTemplate.Height = 24;
+            this.dataGridViewDept.Size = new System.Drawing.Size(522, 365);
+            this.dataGridViewDept.TabIndex = 0;
             // 
             // textBox1
             // 
@@ -428,17 +436,17 @@
             this.textBox2.Size = new System.Drawing.Size(193, 22);
             this.textBox2.TabIndex = 5;
             // 
-            // dataGridView2
+            // dataGridViewIssuedPlace
             // 
-            this.dataGridView2.AllowUserToAddRows = false;
-            this.dataGridView2.AllowUserToDeleteRows = false;
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(13, 225);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.ReadOnly = true;
-            this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(522, 365);
-            this.dataGridView2.TabIndex = 4;
+            this.dataGridViewIssuedPlace.AllowUserToAddRows = false;
+            this.dataGridViewIssuedPlace.AllowUserToDeleteRows = false;
+            this.dataGridViewIssuedPlace.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewIssuedPlace.Location = new System.Drawing.Point(13, 225);
+            this.dataGridViewIssuedPlace.Name = "dataGridViewIssuedPlace";
+            this.dataGridViewIssuedPlace.ReadOnly = true;
+            this.dataGridViewIssuedPlace.RowTemplate.Height = 24;
+            this.dataGridViewIssuedPlace.Size = new System.Drawing.Size(522, 365);
+            this.dataGridViewIssuedPlace.TabIndex = 4;
             // 
             // Form1
             // 
@@ -469,8 +477,8 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDept)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -506,12 +514,12 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridViewDept;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.DataGridView dataGridViewIssuedPlace;
     }
 }
 
