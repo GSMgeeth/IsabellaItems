@@ -31,48 +31,55 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.DataTextBox = new System.Windows.Forms.TextBox();
+            this.addFile = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.showAllBtn = new System.Windows.Forms.Button();
+            this.searchBtn = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.datePicker = new System.Windows.Forms.DateTimePicker();
+            this.label1 = new System.Windows.Forms.Label();
+            this.deptCmb = new System.Windows.Forms.ComboBox();
+            this.itemDataGridView = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.addFile = new System.Windows.Forms.Button();
-            this.dataTextBox = new System.Windows.Forms.TextBox();
-            this.itemDataGridView = new System.Windows.Forms.DataGridView();
-            this.deptCmb = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.datePicker = new System.Windows.Forms.DateTimePicker();
-            this.label2 = new System.Windows.Forms.Label();
-            this.searchBtn = new System.Windows.Forms.Button();
-            this.showAllBtn = new System.Windows.Forms.Button();
-            this.dateTimePickerForMonthlyReport = new System.Windows.Forms.DateTimePicker();
-            this.label3 = new System.Windows.Forms.Label();
-            this.typeForMonthlyReport = new System.Windows.Forms.ComboBox();
-            this.getMonthlyReportBtn = new System.Windows.Forms.Button();
             this.getDailyReportBtn = new System.Windows.Forms.Button();
             this.typeForDailyReport = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.dateTimePickerForDailyReport = new System.Windows.Forms.DateTimePicker();
+            this.getMonthlyReportBtn = new System.Windows.Forms.Button();
+            this.typeForMonthlyReport = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.dateTimePickerForMonthlyReport = new System.Windows.Forms.DateTimePicker();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.dataGridViewDept = new System.Windows.Forms.DataGridView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.dataGridViewDept = new System.Windows.Forms.DataGridView();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.dataGridViewIssuedPlace = new System.Windows.Forms.DataGridView();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.label7 = new System.Windows.Forms.Label();
+            this.searchColortxt = new System.Windows.Forms.TextBox();
+            this.searchSizeTxt = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.searchArticleTxt = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.itemDataGridView)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.itemDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -107,12 +114,30 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.LightBlue;
-            this.panel1.Controls.Add(this.dataTextBox);
+            this.panel1.Controls.Add(this.DataTextBox);
             this.panel1.Controls.Add(this.addFile);
             this.panel1.Location = new System.Drawing.Point(0, 4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1167, 597);
             this.panel1.TabIndex = 0;
+            // 
+            // DataTextBox
+            // 
+            this.DataTextBox.Location = new System.Drawing.Point(6, 113);
+            this.DataTextBox.Multiline = true;
+            this.DataTextBox.Name = "DataTextBox";
+            this.DataTextBox.Size = new System.Drawing.Size(1150, 481);
+            this.DataTextBox.TabIndex = 1;
+            // 
+            // addFile
+            // 
+            this.addFile.Location = new System.Drawing.Point(531, 35);
+            this.addFile.Name = "addFile";
+            this.addFile.Size = new System.Drawing.Size(96, 37);
+            this.addFile.TabIndex = 0;
+            this.addFile.Text = "Add File";
+            this.addFile.UseVisualStyleBackColor = true;
+            this.addFile.Click += new System.EventHandler(this.addFile_Click);
             // 
             // tabPage2
             // 
@@ -128,6 +153,12 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.LightBlue;
+            this.panel2.Controls.Add(this.searchArticleTxt);
+            this.panel2.Controls.Add(this.label9);
+            this.panel2.Controls.Add(this.searchSizeTxt);
+            this.panel2.Controls.Add(this.label8);
+            this.panel2.Controls.Add(this.searchColortxt);
+            this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.showAllBtn);
             this.panel2.Controls.Add(this.searchBtn);
             this.panel2.Controls.Add(this.label2);
@@ -139,6 +170,74 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1167, 597);
             this.panel2.TabIndex = 1;
+            // 
+            // showAllBtn
+            // 
+            this.showAllBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.showAllBtn.Location = new System.Drawing.Point(9, 171);
+            this.showAllBtn.Name = "showAllBtn";
+            this.showAllBtn.Size = new System.Drawing.Size(107, 24);
+            this.showAllBtn.TabIndex = 6;
+            this.showAllBtn.Text = "Show All";
+            this.showAllBtn.UseVisualStyleBackColor = true;
+            // 
+            // searchBtn
+            // 
+            this.searchBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchBtn.Location = new System.Drawing.Point(1035, 93);
+            this.searchBtn.Name = "searchBtn";
+            this.searchBtn.Size = new System.Drawing.Size(89, 24);
+            this.searchBtn.TabIndex = 5;
+            this.searchBtn.Text = "Search";
+            this.searchBtn.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(298, 22);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(102, 17);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Select Date :";
+            // 
+            // datePicker
+            // 
+            this.datePicker.Location = new System.Drawing.Point(300, 45);
+            this.datePicker.Name = "datePicker";
+            this.datePicker.Size = new System.Drawing.Size(255, 22);
+            this.datePicker.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(9, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(152, 17);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Select Department :";
+            // 
+            // deptCmb
+            // 
+            this.deptCmb.FormattingEnabled = true;
+            this.deptCmb.Location = new System.Drawing.Point(9, 45);
+            this.deptCmb.Name = "deptCmb";
+            this.deptCmb.Size = new System.Drawing.Size(248, 24);
+            this.deptCmb.TabIndex = 1;
+            // 
+            // itemDataGridView
+            // 
+            this.itemDataGridView.AllowUserToAddRows = false;
+            this.itemDataGridView.AllowUserToDeleteRows = false;
+            this.itemDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.itemDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.itemDataGridView.Location = new System.Drawing.Point(9, 201);
+            this.itemDataGridView.Name = "itemDataGridView";
+            this.itemDataGridView.ReadOnly = true;
+            this.itemDataGridView.RowTemplate.Height = 24;
+            this.itemDataGridView.Size = new System.Drawing.Size(1150, 389);
+            this.itemDataGridView.TabIndex = 0;
             // 
             // tabPage3
             // 
@@ -166,149 +265,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1167, 597);
             this.panel3.TabIndex = 1;
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.BackColor = System.Drawing.Color.RoyalBlue;
-            this.tabPage4.Controls.Add(this.panel4);
-            this.tabPage4.Location = new System.Drawing.Point(4, 25);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(1163, 600);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Configuration";
-            // 
-            // panel4
-            // 
-            this.panel4.BackColor = System.Drawing.Color.LightBlue;
-            this.panel4.Controls.Add(this.splitContainer1);
-            this.panel4.Location = new System.Drawing.Point(-2, 4);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(1167, 597);
-            this.panel4.TabIndex = 2;
-            // 
-            // addFile
-            // 
-            this.addFile.Location = new System.Drawing.Point(531, 35);
-            this.addFile.Name = "addFile";
-            this.addFile.Size = new System.Drawing.Size(96, 37);
-            this.addFile.TabIndex = 0;
-            this.addFile.Text = "Add File";
-            this.addFile.UseVisualStyleBackColor = true;
-            // 
-            // dataTextBox
-            // 
-            this.dataTextBox.Location = new System.Drawing.Point(6, 113);
-            this.dataTextBox.Multiline = true;
-            this.dataTextBox.Name = "dataTextBox";
-            this.dataTextBox.Size = new System.Drawing.Size(1150, 481);
-            this.dataTextBox.TabIndex = 1;
-            // 
-            // itemDataGridView
-            // 
-            this.itemDataGridView.AllowUserToAddRows = false;
-            this.itemDataGridView.AllowUserToDeleteRows = false;
-            this.itemDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.itemDataGridView.Location = new System.Drawing.Point(9, 201);
-            this.itemDataGridView.Name = "itemDataGridView";
-            this.itemDataGridView.ReadOnly = true;
-            this.itemDataGridView.RowTemplate.Height = 24;
-            this.itemDataGridView.Size = new System.Drawing.Size(1150, 389);
-            this.itemDataGridView.TabIndex = 0;
-            // 
-            // deptCmb
-            // 
-            this.deptCmb.FormattingEnabled = true;
-            this.deptCmb.Location = new System.Drawing.Point(9, 45);
-            this.deptCmb.Name = "deptCmb";
-            this.deptCmb.Size = new System.Drawing.Size(248, 24);
-            this.deptCmb.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(152, 17);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Select Department :";
-            // 
-            // datePicker
-            // 
-            this.datePicker.Location = new System.Drawing.Point(300, 45);
-            this.datePicker.Name = "datePicker";
-            this.datePicker.Size = new System.Drawing.Size(255, 22);
-            this.datePicker.TabIndex = 3;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(298, 22);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(102, 17);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Select Date :";
-            // 
-            // searchBtn
-            // 
-            this.searchBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.searchBtn.Location = new System.Drawing.Point(604, 45);
-            this.searchBtn.Name = "searchBtn";
-            this.searchBtn.Size = new System.Drawing.Size(89, 24);
-            this.searchBtn.TabIndex = 5;
-            this.searchBtn.Text = "Search";
-            this.searchBtn.UseVisualStyleBackColor = true;
-            // 
-            // showAllBtn
-            // 
-            this.showAllBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.showAllBtn.Location = new System.Drawing.Point(837, 43);
-            this.showAllBtn.Name = "showAllBtn";
-            this.showAllBtn.Size = new System.Drawing.Size(107, 24);
-            this.showAllBtn.TabIndex = 6;
-            this.showAllBtn.Text = "Show All";
-            this.showAllBtn.UseVisualStyleBackColor = true;
-            // 
-            // dateTimePickerForMonthlyReport
-            // 
-            this.dateTimePickerForMonthlyReport.Location = new System.Drawing.Point(8, 77);
-            this.dateTimePickerForMonthlyReport.Name = "dateTimePickerForMonthlyReport";
-            this.dateTimePickerForMonthlyReport.Size = new System.Drawing.Size(268, 22);
-            this.dateTimePickerForMonthlyReport.TabIndex = 0;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(8, 44);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(146, 20);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Monthly Reports";
-            // 
-            // typeForMonthlyReport
-            // 
-            this.typeForMonthlyReport.FormattingEnabled = true;
-            this.typeForMonthlyReport.Items.AddRange(new object[] {
-            "All",
-            "Received",
-            "Issued"});
-            this.typeForMonthlyReport.Location = new System.Drawing.Point(296, 75);
-            this.typeForMonthlyReport.Name = "typeForMonthlyReport";
-            this.typeForMonthlyReport.Size = new System.Drawing.Size(169, 24);
-            this.typeForMonthlyReport.TabIndex = 2;
-            // 
-            // getMonthlyReportBtn
-            // 
-            this.getMonthlyReportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.getMonthlyReportBtn.Location = new System.Drawing.Point(509, 67);
-            this.getMonthlyReportBtn.Name = "getMonthlyReportBtn";
-            this.getMonthlyReportBtn.Size = new System.Drawing.Size(122, 32);
-            this.getMonthlyReportBtn.TabIndex = 3;
-            this.getMonthlyReportBtn.Text = "Get Report";
-            this.getMonthlyReportBtn.UseVisualStyleBackColor = true;
             // 
             // getDailyReportBtn
             // 
@@ -349,6 +305,65 @@
             this.dateTimePickerForDailyReport.Size = new System.Drawing.Size(268, 22);
             this.dateTimePickerForDailyReport.TabIndex = 4;
             // 
+            // getMonthlyReportBtn
+            // 
+            this.getMonthlyReportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.getMonthlyReportBtn.Location = new System.Drawing.Point(509, 67);
+            this.getMonthlyReportBtn.Name = "getMonthlyReportBtn";
+            this.getMonthlyReportBtn.Size = new System.Drawing.Size(122, 32);
+            this.getMonthlyReportBtn.TabIndex = 3;
+            this.getMonthlyReportBtn.Text = "Get Report";
+            this.getMonthlyReportBtn.UseVisualStyleBackColor = true;
+            // 
+            // typeForMonthlyReport
+            // 
+            this.typeForMonthlyReport.FormattingEnabled = true;
+            this.typeForMonthlyReport.Items.AddRange(new object[] {
+            "All",
+            "Received",
+            "Issued"});
+            this.typeForMonthlyReport.Location = new System.Drawing.Point(296, 75);
+            this.typeForMonthlyReport.Name = "typeForMonthlyReport";
+            this.typeForMonthlyReport.Size = new System.Drawing.Size(169, 24);
+            this.typeForMonthlyReport.TabIndex = 2;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(8, 44);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(146, 20);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Monthly Reports";
+            // 
+            // dateTimePickerForMonthlyReport
+            // 
+            this.dateTimePickerForMonthlyReport.Location = new System.Drawing.Point(8, 77);
+            this.dateTimePickerForMonthlyReport.Name = "dateTimePickerForMonthlyReport";
+            this.dateTimePickerForMonthlyReport.Size = new System.Drawing.Size(268, 22);
+            this.dateTimePickerForMonthlyReport.TabIndex = 0;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.BackColor = System.Drawing.Color.RoyalBlue;
+            this.tabPage4.Controls.Add(this.panel4);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(1163, 600);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Configuration";
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.LightBlue;
+            this.panel4.Controls.Add(this.splitContainer1);
+            this.panel4.Location = new System.Drawing.Point(-2, 4);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(1167, 597);
+            this.panel4.TabIndex = 2;
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -372,24 +387,15 @@
             this.splitContainer1.SplitterDistance = 576;
             this.splitContainer1.TabIndex = 0;
             // 
-            // dataGridViewDept
+            // label5
             // 
-            this.dataGridViewDept.AllowUserToAddRows = false;
-            this.dataGridViewDept.AllowUserToDeleteRows = false;
-            this.dataGridViewDept.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewDept.Location = new System.Drawing.Point(9, 225);
-            this.dataGridViewDept.Name = "dataGridViewDept";
-            this.dataGridViewDept.ReadOnly = true;
-            this.dataGridViewDept.RowTemplate.Height = 24;
-            this.dataGridViewDept.Size = new System.Drawing.Size(522, 365);
-            this.dataGridViewDept.TabIndex = 0;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(9, 149);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(193, 22);
-            this.textBox1.TabIndex = 1;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(9, 90);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(117, 20);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "Departments";
             // 
             // button1
             // 
@@ -400,15 +406,25 @@
             this.button1.Text = "Add Department";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // label5
+            // textBox1
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(9, 90);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(117, 20);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Departments";
+            this.textBox1.Location = new System.Drawing.Point(9, 149);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(193, 22);
+            this.textBox1.TabIndex = 1;
+            // 
+            // dataGridViewDept
+            // 
+            this.dataGridViewDept.AllowUserToAddRows = false;
+            this.dataGridViewDept.AllowUserToDeleteRows = false;
+            this.dataGridViewDept.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridViewDept.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewDept.Location = new System.Drawing.Point(9, 225);
+            this.dataGridViewDept.Name = "dataGridViewDept";
+            this.dataGridViewDept.ReadOnly = true;
+            this.dataGridViewDept.RowTemplate.Height = 24;
+            this.dataGridViewDept.Size = new System.Drawing.Size(522, 365);
+            this.dataGridViewDept.TabIndex = 0;
             // 
             // label6
             // 
@@ -440,6 +456,7 @@
             // 
             this.dataGridViewIssuedPlace.AllowUserToAddRows = false;
             this.dataGridViewIssuedPlace.AllowUserToDeleteRows = false;
+            this.dataGridViewIssuedPlace.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewIssuedPlace.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewIssuedPlace.Location = new System.Drawing.Point(13, 225);
             this.dataGridViewIssuedPlace.Name = "dataGridViewIssuedPlace";
@@ -447,6 +464,62 @@
             this.dataGridViewIssuedPlace.RowTemplate.Height = 24;
             this.dataGridViewIssuedPlace.Size = new System.Drawing.Size(522, 365);
             this.dataGridViewIssuedPlace.TabIndex = 4;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(630, 22);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(56, 17);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Color :";
+            // 
+            // searchColortxt
+            // 
+            this.searchColortxt.Location = new System.Drawing.Point(633, 43);
+            this.searchColortxt.Name = "searchColortxt";
+            this.searchColortxt.Size = new System.Drawing.Size(132, 22);
+            this.searchColortxt.TabIndex = 8;
+            // 
+            // searchSizeTxt
+            // 
+            this.searchSizeTxt.Location = new System.Drawing.Point(814, 42);
+            this.searchSizeTxt.Name = "searchSizeTxt";
+            this.searchSizeTxt.Size = new System.Drawing.Size(132, 22);
+            this.searchSizeTxt.TabIndex = 10;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(811, 22);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(49, 17);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "Size :";
+            // 
+            // searchArticleTxt
+            // 
+            this.searchArticleTxt.Location = new System.Drawing.Point(992, 42);
+            this.searchArticleTxt.Name = "searchArticleTxt";
+            this.searchArticleTxt.Size = new System.Drawing.Size(132, 22);
+            this.searchArticleTxt.TabIndex = 12;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(989, 22);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(64, 17);
+            this.label9.TabIndex = 11;
+            this.label9.Text = "Article :";
             // 
             // Form1
             // 
@@ -465,12 +538,12 @@
             this.tabPage2.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.itemDataGridView)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.itemDataGridView)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -495,7 +568,7 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button addFile;
-        private System.Windows.Forms.TextBox dataTextBox;
+        private System.Windows.Forms.TextBox DataTextBox;
         private System.Windows.Forms.DataGridView itemDataGridView;
         private System.Windows.Forms.ComboBox deptCmb;
         private System.Windows.Forms.Label label1;
@@ -520,6 +593,13 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.DataGridView dataGridViewIssuedPlace;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.TextBox searchColortxt;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox searchSizeTxt;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox searchArticleTxt;
+        private System.Windows.Forms.Label label9;
     }
 }
 
