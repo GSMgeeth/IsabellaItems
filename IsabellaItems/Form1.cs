@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using IsabellaItems.Role;
 using System.Runtime.InteropServices;
+using IsabellaItems.Report;
 
 namespace IsabellaItems
 {
@@ -376,6 +377,15 @@ namespace IsabellaItems
             searchSizeTxt.Clear();
             searchArticleTxt.Clear();
             itemDataGridView.DataSource = getItems();
+        }
+
+        private void getMonthlyReportBtn_Click(object sender, EventArgs e)
+        {
+            string qry = "SELECT color, size, article, COUNT(item_id) as total from item GROUP BY color, size, article;";
+
+            ReportForm rptFrm = new ReportForm(qry);
+
+            rptFrm.Show();
         }
     }
 }

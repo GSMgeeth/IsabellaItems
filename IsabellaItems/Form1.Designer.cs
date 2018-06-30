@@ -35,6 +35,12 @@
             this.addFile = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.searchArticleTxt = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.searchSizeTxt = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.searchColortxt = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.showAllBtn = new System.Windows.Forms.Button();
             this.searchBtn = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -64,12 +70,6 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.dataGridViewIssuedPlace = new System.Windows.Forms.DataGridView();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.label7 = new System.Windows.Forms.Label();
-            this.searchColortxt = new System.Windows.Forms.TextBox();
-            this.searchSizeTxt = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.searchArticleTxt = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -170,6 +170,57 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1167, 597);
             this.panel2.TabIndex = 1;
+            // 
+            // searchArticleTxt
+            // 
+            this.searchArticleTxt.Location = new System.Drawing.Point(992, 42);
+            this.searchArticleTxt.Name = "searchArticleTxt";
+            this.searchArticleTxt.Size = new System.Drawing.Size(132, 22);
+            this.searchArticleTxt.TabIndex = 12;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(989, 22);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(64, 17);
+            this.label9.TabIndex = 11;
+            this.label9.Text = "Article :";
+            // 
+            // searchSizeTxt
+            // 
+            this.searchSizeTxt.Location = new System.Drawing.Point(814, 42);
+            this.searchSizeTxt.Name = "searchSizeTxt";
+            this.searchSizeTxt.Size = new System.Drawing.Size(132, 22);
+            this.searchSizeTxt.TabIndex = 10;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(811, 22);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(49, 17);
+            this.label8.TabIndex = 9;
+            this.label8.Text = "Size :";
+            // 
+            // searchColortxt
+            // 
+            this.searchColortxt.Location = new System.Drawing.Point(633, 43);
+            this.searchColortxt.Name = "searchColortxt";
+            this.searchColortxt.Size = new System.Drawing.Size(132, 22);
+            this.searchColortxt.TabIndex = 8;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(630, 22);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(56, 17);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Color :";
             // 
             // showAllBtn
             // 
@@ -316,6 +367,7 @@
             this.getMonthlyReportBtn.TabIndex = 3;
             this.getMonthlyReportBtn.Text = "Get Report";
             this.getMonthlyReportBtn.UseVisualStyleBackColor = true;
+            this.getMonthlyReportBtn.Click += new System.EventHandler(this.getMonthlyReportBtn_Click);
             // 
             // typeForMonthlyReport
             // 
@@ -471,57 +523,6 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(630, 22);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(56, 17);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Color :";
-            // 
-            // searchColortxt
-            // 
-            this.searchColortxt.Location = new System.Drawing.Point(633, 43);
-            this.searchColortxt.Name = "searchColortxt";
-            this.searchColortxt.Size = new System.Drawing.Size(132, 22);
-            this.searchColortxt.TabIndex = 8;
-            // 
-            // searchSizeTxt
-            // 
-            this.searchSizeTxt.Location = new System.Drawing.Point(814, 42);
-            this.searchSizeTxt.Name = "searchSizeTxt";
-            this.searchSizeTxt.Size = new System.Drawing.Size(132, 22);
-            this.searchSizeTxt.TabIndex = 10;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(811, 22);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(49, 17);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "Size :";
-            // 
-            // searchArticleTxt
-            // 
-            this.searchArticleTxt.Location = new System.Drawing.Point(992, 42);
-            this.searchArticleTxt.Name = "searchArticleTxt";
-            this.searchArticleTxt.Size = new System.Drawing.Size(132, 22);
-            this.searchArticleTxt.TabIndex = 12;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(989, 22);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(64, 17);
-            this.label9.TabIndex = 11;
-            this.label9.Text = "Article :";
             // 
             // Form1
             // 
