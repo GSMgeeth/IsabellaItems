@@ -85,9 +85,10 @@
     <Compile Include="Report\ReportForm.Designer.cs">
       <DependentUpon>ReportForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Role\Department.cs" />
-    <Compile Include="Role\IssuedPlace.cs" />
-    <Compile Include="Role\Item.cs" />
+    <Compile Include="Role\Batch.cs" />
+    <Compile Include="Role\Issued.cs" />
+    <Compile Include="Role\Place.cs" />
+    <Compile Include="Role\Received.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

@@ -10,7 +10,7 @@ namespace IsabellaItems.Core
 {
     class DBConnection
     {
-        private static string connString = string.Format("Server=localhost; database=Isabellaitems; UID=root; password=; SSLMode=none");
+        private static string connString = string.Format("Server=localhost; database=itemsrecorderisabella; UID=root; password=; SSLMode=none");
         private static MySqlConnection conn = new MySqlConnection(connString);
         private static MySqlConnection tmpConn = null;
 

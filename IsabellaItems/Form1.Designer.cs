@@ -46,7 +46,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.datePicker = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
-            this.deptCmb = new System.Windows.Forms.ComboBox();
+            this.issuedCmb = new System.Windows.Forms.ComboBox();
             this.itemDataGridView = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -61,10 +61,6 @@
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel4 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.label5 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.dataGridViewDept = new System.Windows.Forms.DataGridView();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -81,10 +77,8 @@
             this.tabPage4.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDept)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).BeginInit();
             this.SuspendLayout();
             // 
@@ -164,7 +158,7 @@
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.datePicker);
             this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.deptCmb);
+            this.panel2.Controls.Add(this.issuedCmb);
             this.panel2.Controls.Add(this.itemDataGridView);
             this.panel2.Location = new System.Drawing.Point(-2, 4);
             this.panel2.Name = "panel2";
@@ -267,17 +261,17 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(9, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(152, 17);
+            this.label1.Size = new System.Drawing.Size(110, 17);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Select Department :";
+            this.label1.Text = "Issued Place :";
             // 
-            // deptCmb
+            // issuedCmb
             // 
-            this.deptCmb.FormattingEnabled = true;
-            this.deptCmb.Location = new System.Drawing.Point(9, 45);
-            this.deptCmb.Name = "deptCmb";
-            this.deptCmb.Size = new System.Drawing.Size(248, 24);
-            this.deptCmb.TabIndex = 1;
+            this.issuedCmb.FormattingEnabled = true;
+            this.issuedCmb.Location = new System.Drawing.Point(9, 45);
+            this.issuedCmb.Name = "issuedCmb";
+            this.issuedCmb.Size = new System.Drawing.Size(248, 24);
+            this.issuedCmb.TabIndex = 1;
             // 
             // itemDataGridView
             // 
@@ -424,13 +418,6 @@
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.label5);
-            this.splitContainer1.Panel1.Controls.Add(this.button1);
-            this.splitContainer1.Panel1.Controls.Add(this.textBox1);
-            this.splitContainer1.Panel1.Controls.Add(this.dataGridViewDept);
-            // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.label6);
@@ -440,45 +427,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(1167, 597);
             this.splitContainer1.SplitterDistance = 576;
             this.splitContainer1.TabIndex = 0;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(9, 90);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(117, 20);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Departments";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(232, 147);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(159, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Add Department";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(9, 149);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(193, 22);
-            this.textBox1.TabIndex = 1;
-            // 
-            // dataGridViewDept
-            // 
-            this.dataGridViewDept.AllowUserToAddRows = false;
-            this.dataGridViewDept.AllowUserToDeleteRows = false;
-            this.dataGridViewDept.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridViewDept.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewDept.Location = new System.Drawing.Point(9, 225);
-            this.dataGridViewDept.Name = "dataGridViewDept";
-            this.dataGridViewDept.ReadOnly = true;
-            this.dataGridViewDept.RowTemplate.Height = 24;
-            this.dataGridViewDept.Size = new System.Drawing.Size(522, 365);
-            this.dataGridViewDept.TabIndex = 0;
             // 
             // label6
             // 
@@ -492,9 +440,10 @@
             // 
             // button2
             // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Location = new System.Drawing.Point(236, 147);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(159, 23);
+            this.button2.Size = new System.Drawing.Size(159, 24);
             this.button2.TabIndex = 6;
             this.button2.Text = "Add Issued Place";
             this.button2.UseVisualStyleBackColor = true;
@@ -547,13 +496,10 @@
             this.panel3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDept)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).EndInit();
             this.ResumeLayout(false);
 
@@ -573,7 +519,7 @@
         private System.Windows.Forms.Button addFile;
         private System.Windows.Forms.TextBox DataTextBox;
         private System.Windows.Forms.DataGridView itemDataGridView;
-        private System.Windows.Forms.ComboBox deptCmb;
+        private System.Windows.Forms.ComboBox issuedCmb;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DateTimePicker datePicker;
@@ -588,10 +534,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DateTimePicker dateTimePickerForDailyReport;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.DataGridView dataGridViewDept;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox2;

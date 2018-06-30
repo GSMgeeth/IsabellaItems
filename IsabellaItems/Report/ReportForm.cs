@@ -28,7 +28,6 @@ namespace IsabellaItems.Report
             DataTable table = new DataTable();
 
             MySqlDataReader reader = null;
-            MySqlDataReader readerBal = null;
             
             table.Columns.Add("Color", typeof(string));
             table.Columns.Add("Size", typeof(string));
@@ -44,25 +43,10 @@ namespace IsabellaItems.Report
                 {
                     while (reader.Read())
                     {
-                        readerBal = DBConnection.getDataViaTmpConnection("SELECT COUNT(item_id) as balance from item where issued=0 and color='" + reader.GetString("color") + "' and size='" + reader.GetString("size") + "' and article='" + reader.GetString("article") + "'");
-
-                        if (readerBal.HasRows)
-                        {
-                            while (readerBal.Read())
-                            {
-                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), readerBal.GetInt32("balance"));
-                            }
-
-                            readerBal.Close();
-                            DBConnection.closeTmpConnection();
-                        }
+                        table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), reader.GetInt32("balance"));
                     }
 
                     reader.Close();
-
-                    if (readerBal != null)
-                        if (!readerBal.IsClosed)
-                            readerBal.Close();
 
                     Report.CrystalReportOfItems rpt = new Report.CrystalReportOfItems();
 
@@ -75,19 +59,11 @@ namespace IsabellaItems.Report
                 {
                     reader.Close();
 
-                    if (readerBal != null)
-                        if (!readerBal.IsClosed)
-                            readerBal.Close();
-
                     MessageBox.Show("No records!", "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
             {
-                if (readerBal != null)
-                    if (!readerBal.IsClosed)
-                        readerBal.Close();
-
                 MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
