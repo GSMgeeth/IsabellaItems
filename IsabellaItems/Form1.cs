@@ -60,7 +60,7 @@ namespace IsabellaItems
         {
             System.Data.DataTable table = new System.Data.DataTable();
 
-            MySqlDataReader reader = DBConnection.getData("SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+            MySqlDataReader reader = DBConnection.getData("SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                 "FROM received r " +
                 "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                 "INNER JOIN batch b on r.batch_id=b.batch_id " +
@@ -198,7 +198,7 @@ namespace IsabellaItems
         {
             string place = "Pallekale";
             //DateTime date = datePicker.Value;
-            string qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+            string qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                 "FROM received r " +
                 "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                 "INNER JOIN batch b on r.batch_id=b.batch_id " +
@@ -211,7 +211,7 @@ namespace IsabellaItems
 
             if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                 "FROM received r " +
                 "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                 "INNER JOIN batch b on r.batch_id=b.batch_id " +
@@ -223,7 +223,7 @@ namespace IsabellaItems
 
                 if (place.Equals("All"))
                 {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id " +
@@ -239,7 +239,9 @@ namespace IsabellaItems
                         place_id = reader.GetInt32("place_id");
                     }
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " " +
@@ -248,7 +250,7 @@ namespace IsabellaItems
             }
             else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' " +
@@ -256,7 +258,7 @@ namespace IsabellaItems
             }
             else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' " +
@@ -264,7 +266,7 @@ namespace IsabellaItems
             }
             else if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' " +
@@ -272,7 +274,7 @@ namespace IsabellaItems
             }
             else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' " +
@@ -280,7 +282,7 @@ namespace IsabellaItems
             }
             else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' and b.color='" + color + "' " +
@@ -288,7 +290,7 @@ namespace IsabellaItems
             }
             else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.article='" + article + "' " +
@@ -300,7 +302,7 @@ namespace IsabellaItems
 
                 if (place.Equals("All"))
                 {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' " +
@@ -316,7 +318,9 @@ namespace IsabellaItems
                         place_id = reader.GetInt32("place_id");
                     }
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' " +
@@ -329,7 +333,7 @@ namespace IsabellaItems
 
                 if (place.Equals("All"))
                 {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' " +
@@ -345,7 +349,9 @@ namespace IsabellaItems
                         place_id = reader.GetInt32("place_id");
                     }
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.size='" + size + "' " +
@@ -358,7 +364,7 @@ namespace IsabellaItems
 
                 if (place.Equals("All"))
                 {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' " +
@@ -374,7 +380,9 @@ namespace IsabellaItems
                         place_id = reader.GetInt32("place_id");
                     }
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article='" + article + "' " +
@@ -387,7 +395,7 @@ namespace IsabellaItems
 
                 if (place.Equals("All"))
                 {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.size='" + size + "' " +
@@ -403,7 +411,9 @@ namespace IsabellaItems
                         place_id = reader.GetInt32("place_id");
                     }
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.size='" + size + "' " +
@@ -416,7 +426,7 @@ namespace IsabellaItems
 
                 if (place.Equals("All"))
                 {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.article='" + article + "' " +
@@ -432,7 +442,9 @@ namespace IsabellaItems
                         place_id = reader.GetInt32("place_id");
                     }
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.article='" + article + "' " +
@@ -445,7 +457,7 @@ namespace IsabellaItems
 
                 if (place.Equals("All"))
                 {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' and b.size='" + size + "' " +
@@ -461,7 +473,9 @@ namespace IsabellaItems
                         place_id = reader.GetInt32("place_id");
                     }
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, i.issued " +
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                     "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article='" + article + "' and b.size='" + size + "' " +
@@ -487,9 +501,9 @@ namespace IsabellaItems
                     MessageBox.Show("No records for this data!", "Items finder", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                MessageBox.Show("Invalid data!", "Items finder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Invalid data!\n" + exc.StackTrace, "Items finder", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -513,6 +527,20 @@ namespace IsabellaItems
             ReportForm rptFrm = new ReportForm(qry);
 
             rptFrm.Show();
+        }
+
+        private void itemDataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string color = itemDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+            string size = itemDataGridView.Rows[e.RowIndex].Cells[1].Value.ToString();
+            string article = itemDataGridView.Rows[e.RowIndex].Cells[2].Value.ToString();
+            string balance = itemDataGridView.Rows[e.RowIndex].Cells[5].Value.ToString();
+
+            IssueForm frm = new IssueForm(color, size, article, Int32.Parse(balance));
+
+            frm.ShowDialog(this);
+
+            itemDataGridView.DataSource = getItems();
         }
     }
 }

@@ -19,6 +19,16 @@ namespace IsabellaItems.Role
             this.receivedQty = receivedQty;
         }
 
+        public Received(Batch batch)
+        {
+            this.batch = batch;
+        }
+
+        public void issue()
+        {
+
+        }
+
         public DateTime Date { get => date; set => date = value; }
         public int ReceivedQty { get => receivedQty; set => receivedQty = value; }
         internal Batch Batch { get => batch; set => batch = value; }

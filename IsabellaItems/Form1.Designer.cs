@@ -31,7 +31,6 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.DataTextBox = new System.Windows.Forms.TextBox();
             this.addFile = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -108,24 +107,15 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.LightBlue;
-            this.panel1.Controls.Add(this.DataTextBox);
             this.panel1.Controls.Add(this.addFile);
             this.panel1.Location = new System.Drawing.Point(0, 4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1167, 597);
             this.panel1.TabIndex = 0;
             // 
-            // DataTextBox
-            // 
-            this.DataTextBox.Location = new System.Drawing.Point(6, 113);
-            this.DataTextBox.Multiline = true;
-            this.DataTextBox.Name = "DataTextBox";
-            this.DataTextBox.Size = new System.Drawing.Size(1150, 481);
-            this.DataTextBox.TabIndex = 1;
-            // 
             // addFile
             // 
-            this.addFile.Location = new System.Drawing.Point(531, 35);
+            this.addFile.Location = new System.Drawing.Point(6, 99);
             this.addFile.Name = "addFile";
             this.addFile.Size = new System.Drawing.Size(96, 37);
             this.addFile.TabIndex = 0;
@@ -285,6 +275,7 @@
             this.itemDataGridView.RowTemplate.Height = 24;
             this.itemDataGridView.Size = new System.Drawing.Size(1150, 389);
             this.itemDataGridView.TabIndex = 0;
+            this.itemDataGridView.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.itemDataGridView_RowHeaderMouseDoubleClick);
             // 
             // tabPage3
             // 
@@ -486,7 +477,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -517,7 +507,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button addFile;
-        private System.Windows.Forms.TextBox DataTextBox;
         private System.Windows.Forms.DataGridView itemDataGridView;
         private System.Windows.Forms.ComboBox issuedCmb;
         private System.Windows.Forms.Label label1;

@@ -43,7 +43,21 @@ namespace IsabellaItems.Report
                 {
                     while (reader.Read())
                     {
-                        table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), reader.GetInt32("balance"));
+                        Object o;
+
+                        try
+                        {
+                            o = reader.GetString("balance");
+                        }
+                        catch (Exception)
+                        {
+                            o = null;
+                        }
+
+                        if (o != null)
+                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), reader.GetInt32("balance"));
+                        else
+                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), 0);
                     }
 
                     reader.Close();
