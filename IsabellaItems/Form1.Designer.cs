@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series17 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series18 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -438,20 +438,20 @@
             // 
             // chart
             // 
-            chartArea9.Name = "ChartArea1";
-            this.chart.ChartAreas.Add(chartArea9);
-            legend9.Name = "Legend1";
-            this.chart.Legends.Add(legend9);
+            chartArea10.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea10);
+            legend10.Name = "Legend1";
+            this.chart.Legends.Add(legend10);
             this.chart.Location = new System.Drawing.Point(121, 110);
             this.chart.Name = "chart";
-            series17.ChartArea = "ChartArea1";
-            series17.Legend = "Legend1";
-            series17.Name = "Received";
-            series18.ChartArea = "ChartArea1";
-            series18.Legend = "Legend1";
-            series18.Name = "Balance";
-            this.chart.Series.Add(series17);
-            this.chart.Series.Add(series18);
+            series19.ChartArea = "ChartArea1";
+            series19.Legend = "Legend1";
+            series19.Name = "Received";
+            series20.ChartArea = "ChartArea1";
+            series20.Legend = "Legend1";
+            series20.Name = "Balance";
+            this.chart.Series.Add(series19);
+            this.chart.Series.Add(series20);
             this.chart.Size = new System.Drawing.Size(980, 359);
             this.chart.TabIndex = 1;
             this.chart.Text = "chart1";
@@ -538,7 +538,7 @@
             this.ClientSize = new System.Drawing.Size(1196, 654);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
-            this.Text = "Second Quality Items";
+            this.Text = "WIP";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
