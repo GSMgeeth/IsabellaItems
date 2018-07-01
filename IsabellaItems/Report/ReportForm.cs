@@ -15,71 +15,194 @@ namespace IsabellaItems.Report
     public partial class ReportForm : Form
     {
         string qry = "";
+        int type;
 
-        public ReportForm(string qry)
+        public ReportForm(string qry, int type)
         {
             this.qry = qry;
+            this.type = type;
 
             InitializeComponent();
         }
 
         private void ReportForm_Load(object sender, EventArgs e)
         {
-            DataTable table = new DataTable();
-
-            MySqlDataReader reader = null;
-            
-            table.Columns.Add("Color", typeof(string));
-            table.Columns.Add("Size", typeof(string));
-            table.Columns.Add("Article", typeof(string));
-            table.Columns.Add("Total Quantity", typeof(int));
-            table.Columns.Add("Issued Quantity", typeof(int));
-            table.Columns.Add("Balance Quantity", typeof(int));
-
-            try
+            if (type == 1)
             {
-                reader = DBConnection.getData(qry);
+                DataTable table = new DataTable();
 
-                if (reader.HasRows)
+                MySqlDataReader reader = null;
+
+                table.Columns.Add("Color", typeof(string));
+                table.Columns.Add("Size", typeof(string));
+                table.Columns.Add("Article", typeof(string));
+                table.Columns.Add("Issued Quantity", typeof(int));
+
+                try
                 {
-                    while (reader.Read())
+                    reader = DBConnection.getData(qry);
+
+                    if (reader.HasRows)
                     {
-                        Object o;
-
-                        try
+                        while (reader.Read())
                         {
-                            o = reader.GetString("balance");
-                        }
-                        catch (Exception)
-                        {
-                            o = null;
+                            Object o;
+
+                            try
+                            {
+                                o = reader.GetString("issued");
+                            }
+                            catch (Exception)
+                            {
+                                o = null;
+                            }
+
+                            if (o != null)
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("issued"));
+                            else
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), 0);
                         }
 
-                        if (o != null)
-                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), reader.GetInt32("total") - reader.GetInt32("balance"), reader.GetInt32("balance"));
-                        else
-                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), 0, reader.GetInt32("total"));
+                        reader.Close();
+
+                        Report.CrystalReportIssued rpt = new Report.CrystalReportIssued();
+
+                        rpt.Database.Tables["Item"].SetDataSource(table);
+
+                        ItemsCrystalReportViewer.ReportSource = null;
+                        ItemsCrystalReportViewer.ReportSource = rpt;
                     }
+                    else
+                    {
+                        reader.Close();
 
-                    reader.Close();
-
-                    Report.CrystalReportOfItems rpt = new Report.CrystalReportOfItems();
-
-                    rpt.Database.Tables["Item"].SetDataSource(table);
-
-                    ItemsCrystalReportViewer.ReportSource = null;
-                    ItemsCrystalReportViewer.ReportSource = rpt;
+                        MessageBox.Show("No records!", "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    reader.Close();
-
-                    MessageBox.Show("No records!", "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            catch (Exception ex)
+            else if (type == 0)
             {
-                MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                DataTable table = new DataTable();
+
+                MySqlDataReader reader = null;
+
+                table.Columns.Add("Color", typeof(string));
+                table.Columns.Add("Size", typeof(string));
+                table.Columns.Add("Article", typeof(string));
+                table.Columns.Add("Total Quantity", typeof(int));
+                table.Columns.Add("Issued Quantity", typeof(int));
+                table.Columns.Add("Balance Quantity", typeof(int));
+
+                try
+                {
+                    reader = DBConnection.getData(qry);
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            Object o;
+
+                            try
+                            {
+                                o = reader.GetString("balance");
+                            }
+                            catch (Exception)
+                            {
+                                o = null;
+                            }
+
+                            if (o != null)
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), reader.GetInt32("total") - reader.GetInt32("balance"), reader.GetInt32("balance"));
+                            else
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), 0, reader.GetInt32("total"));
+                        }
+
+                        reader.Close();
+
+                        Report.CrystalReportOfItems rpt = new Report.CrystalReportOfItems();
+
+                        rpt.Database.Tables["Item"].SetDataSource(table);
+
+                        ItemsCrystalReportViewer.ReportSource = null;
+                        ItemsCrystalReportViewer.ReportSource = rpt;
+                    }
+                    else
+                    {
+                        reader.Close();
+
+                        MessageBox.Show("No records!", "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else if (type == 2)
+            {
+                DataTable table = new DataTable();
+
+                MySqlDataReader reader = null;
+
+                table.Columns.Add("Received", typeof(int));
+                table.Columns.Add("Pallekale", typeof(int));
+                table.Columns.Add("Henz", typeof(int));
+                table.Columns.Add("Balance", typeof(int));
+
+                try
+                {
+                    reader = DBConnection.getData(qry);
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            /*
+                            Object o;
+
+                            try
+                            {
+                                o = reader.GetString("issued");
+                            }
+                            catch (Exception)
+                            {
+                                o = null;
+                            }
+                            
+                            if (o != null)
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("issued"));
+                            else
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), 0);
+                            */
+
+                            table.Rows.Add(reader.GetInt32("received"), reader.GetInt32("pallekale"), reader.GetInt32("henz"), reader.GetInt32("balance"));
+                        }
+
+                        reader.Close();
+
+                        Report.CrystalReportSummary rpt = new Report.CrystalReportSummary();
+
+                        rpt.Database.Tables["Summary"].SetDataSource(table);
+
+                        ItemsCrystalReportViewer.ReportSource = null;
+                        ItemsCrystalReportViewer.ReportSource = rpt;
+                    }
+                    else
+                    {
+                        reader.Close();
+
+                        MessageBox.Show("No records!", "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
 

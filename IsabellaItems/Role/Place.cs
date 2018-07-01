@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IsabellaItems.Role
 {
-    class Place
+    public class Place
     {
         private int place_id;
         private string place;

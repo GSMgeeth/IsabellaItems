@@ -29,6 +29,94 @@ namespace IsabellaItems
             itemDataGridView.DataSource = getItems();
             dataGridViewIssuedPlace.DataSource = getIssuedPlace();
             fillIssuedCmb();
+            setProgress();
+        }
+
+        private void setProgress()
+        {
+            int received = 100;
+            int issued = 50;
+
+            MySqlDataReader readerRcv = DBConnection.getData("select SUM(receivedQty) AS received from received");
+
+            while (readerRcv.Read())
+            {
+                received = readerRcv.GetInt32("received");
+            }
+
+            readerRcv.Close();
+
+            MySqlDataReader readerIss = DBConnection.getData("select SUM(issuedQty) AS issued from issued");
+
+            while (readerIss.Read())
+            {
+                issued = readerIss.GetInt32("issued");
+            }
+
+            readerIss.Close();
+
+            int balance = received - issued;
+
+            rcvLbl.Text = "" + received;
+            issLbl.Text = "" + issued;
+            balLbl.Text = "" + balance;
+
+            string day = DateTime.Now.DayOfWeek.ToString();
+
+            int noOfDay = getDayeNo(day);
+            int i = noOfDay;
+
+            DateTime date = DateTime.Today;
+
+            do
+            {
+                int chartRcv = 0;
+                int chartIss = 0;
+
+                MySqlDataReader reader = DBConnection.getData("select IFNULL(SUM(receivedQty),0) AS received from received where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
+
+                while (reader.Read())
+                {
+                    chartRcv = reader.GetInt32("received");
+                }
+
+                reader.Close();
+
+                MySqlDataReader readerTwo = DBConnection.getData("select IFNULL(SUM(issuedQty),0) AS issued from issued where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
+
+                while (readerTwo.Read())
+                {
+                    chartIss = readerTwo.GetInt32("issued");
+                }
+
+                readerTwo.Close();
+
+                chart.Series["Received"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv);
+                chart.Series["Balance"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv - chartIss);
+
+                i--;
+
+            } while (i >= 0) ;
+        }
+
+        private int getDayeNo(string day)
+        {
+            if (day.Equals("Monday"))
+                return 0;
+            else if (day.Equals("Tuesday"))
+                return 1;
+            else if (day.Equals("Wednesday"))
+                return 2;
+            else if (day.Equals("Thursday"))
+                return 3;
+            else if (day.Equals("Friday"))
+                return 4;
+            else if (day.Equals("Saturday"))
+                return 5;
+            else if (day.Equals("Sunday"))
+                return 6;
+            else
+                return -1;
         }
 
         private void fillIssuedCmb()
@@ -130,6 +218,7 @@ namespace IsabellaItems
                         finally
                         {
                             itemDataGridView.DataSource = getItems();
+                            setProgress();
                         }
                     }
                 }
@@ -466,7 +555,7 @@ namespace IsabellaItems
         {
             DateTime from = dateTimePickerFrom.Value;
             DateTime to = dateTimePickerTo.Value;
-
+            int type = 0;
             string qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as total, (r.receivedQty - i.issued) as balance " +
                 "FROM received r " +
                 "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued WHERE date BETWEEN date('" + from.ToString("yyyy/M/d") + "') and date('" + to.ToString("yyyy/M/d") + "') GROUP BY batch_id) i on r.batch_id=i.batch_id " +
@@ -491,7 +580,9 @@ namespace IsabellaItems
 
                     reader.Close();
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as total, (r.receivedQty - i.issued) as balance " +
+                    type = 1;
+
+                    qry = "SELECT b.color, b.size, b.article, IFNULL(i.issued, 0) as issued " +
                         "FROM received r " +
                         "LEFT JOIN (SELECT place_id, batch_id, SUM(issuedQty) as issued FROM issued WHERE place_id=" + place_id + " and date BETWEEN date('" + from.ToString("yyyy/M/d") + "') and date('" + to.ToString("yyyy/M/d") + "') GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                         "INNER JOIN batch b on r.batch_id=b.batch_id WHERE i.place_id=" + place_id + " and  r.date BETWEEN date('" + from.ToString("yyyy/M/d") + "') and date('" + to.ToString("yyyy/M/d") + "') " +
@@ -499,7 +590,7 @@ namespace IsabellaItems
                 }
             }
 
-            ReportForm rptFrm = new ReportForm(qry);
+            ReportForm rptFrm = new ReportForm(qry, type);
 
             rptFrm.Show();
         }
@@ -516,6 +607,53 @@ namespace IsabellaItems
             frm.ShowDialog(this);
 
             itemDataGridView.DataSource = getItems();
+            setProgress();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string qry = "select SUM(r.receivedQty) as received, IFNULL(ip.issuedQty, 0) as pallekale, IFNULL(ih.issuedQty, 0) as henz, IFNULL((SUM(r.receivedQty) - (IFNULL(ip.issuedQty, 0) + IFNULL(ih.issuedQty, 0))), 0) as balance " +
+                "from received r " +
+                "join (select SUM(issuedQty) as issuedQty from issued where place_id=1) ip " +
+                "join (select SUM(issuedQty) as issuedQty from issued where place_id=2) ih;";
+
+            ReportForm rptFrm = new ReportForm(qry, 2);
+
+            rptFrm.Show();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int length = itemDataGridView.RowCount;
+
+            Role.Issued[] issue = new Role.Issued[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                string color = itemDataGridView.Rows[i].Cells[0].Value.ToString();
+                string size = itemDataGridView.Rows[i].Cells[1].Value.ToString();
+                string article = itemDataGridView.Rows[i].Cells[2].Value.ToString();
+                string balance = itemDataGridView.Rows[i].Cells[5].Value.ToString();
+
+                Batch batch = new Batch(color, size, article);
+                Place place = new Place();
+
+                issue[i] = new Role.Issued(batch, place, DateTime.Now, int.Parse(balance));
+            }
+
+            issueAllForm frm = new issueAllForm();
+
+            frm.getIssues(issue);
+
+            frm.ShowDialog(this);
+
+            itemDataGridView.DataSource = getItems();
+            setProgress();
         }
     }
 }

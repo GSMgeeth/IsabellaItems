@@ -26,33 +26,56 @@ namespace IsabellaItems.Core
                 }
 
                 reader.Close();
-            }
-            else
-            {
-                reader.Close();
 
-                DBConnection.updateDB("insert into batch (color, size, article) values ('" + color + "', '" + size + "', '" + article + "')");
+                MySqlDataReader readerPlace = DBConnection.getData("select place_id from place where place='" + place + "'");
 
-                MySqlDataReader readerNew = DBConnection.getData("select batch_id from batch where color='" + color + "' and size='" + size + "' and article='" + article + "'");
-
-                while (readerNew.Read())
+                while (readerPlace.Read())
                 {
-                    batch_id = readerNew.GetInt32("batch_id");
+                    place_id = readerPlace.GetInt32("place_id");
                 }
 
-                readerNew.Close();
+                readerPlace.Close();
+
+                DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
             }
+        }
 
-            MySqlDataReader readerPlace = DBConnection.getData("select place_id from place where place='" + place + "'");
-
-            while (readerPlace.Read())
+        public static void issueAll(Role.Issued [] issued)
+        {
+            foreach (Role.Issued issue in issued)
             {
-                place_id = readerPlace.GetInt32("place_id");
+                int batch_id = 1;
+                int place_id = 1;
+
+                string color = issue.Batch.Color;
+                string size = issue.Batch.Size;
+                string article = issue.Batch.Article;
+                string place = issue.Place.GetPlace();
+                int qty = issue.IssuedQty;
+
+                MySqlDataReader reader = DBConnection.getData("select batch_id from batch where color='" + color + "' and size='" + size + "' and article='" + article + "'");
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        batch_id = reader.GetInt32("batch_id");
+                    }
+
+                    reader.Close();
+
+                    MySqlDataReader readerPlace = DBConnection.getData("select place_id from place where place='" + place + "'");
+
+                    while (readerPlace.Read())
+                    {
+                        place_id = readerPlace.GetInt32("place_id");
+                    }
+
+                    readerPlace.Close();
+
+                    DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                }
             }
-
-            readerPlace.Close();
-
-            DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
         }
 
         public static void receive(Received rcv)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IsabellaItems.Role
 {
-    class Issued
+    public class Issued
     {
         private Batch batch;
         private Place place;
@@ -23,7 +23,7 @@ namespace IsabellaItems.Role
 
         public DateTime Date { get => date; set => date = value; }
         public int IssuedQty { get => issuedQty; set => issuedQty = value; }
-        internal Batch Batch { get => batch; set => batch = value; }
-        internal Place Place { get => place; set => place = value; }
+        public Batch Batch { get => batch; set => batch = value; }
+        public Place Place { get => place; set => place = value; }
     }
 }

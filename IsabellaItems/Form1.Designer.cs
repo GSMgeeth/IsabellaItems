@@ -28,6 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series15 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series16 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -47,6 +51,7 @@
             this.itemDataGridView = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.dateTimePickerTo = new System.Windows.Forms.DateTimePicker();
             this.getMonthlyReportBtn = new System.Windows.Forms.Button();
             this.placeForMonthlyReport = new System.Windows.Forms.ComboBox();
@@ -60,6 +65,14 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.dataGridViewIssuedPlace = new System.Windows.Forms.DataGridView();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.rcvLbl = new System.Windows.Forms.Label();
+            this.issLbl = new System.Windows.Forms.Label();
+            this.balLbl = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -74,6 +87,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -102,6 +116,13 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.LightBlue;
+            this.panel1.Controls.Add(this.balLbl);
+            this.panel1.Controls.Add(this.issLbl);
+            this.panel1.Controls.Add(this.rcvLbl);
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.chart);
             this.panel1.Controls.Add(this.addFile);
             this.panel1.Location = new System.Drawing.Point(0, 4);
             this.panel1.Name = "panel1";
@@ -110,7 +131,7 @@
             // 
             // addFile
             // 
-            this.addFile.Location = new System.Drawing.Point(6, 99);
+            this.addFile.Location = new System.Drawing.Point(507, 42);
             this.addFile.Name = "addFile";
             this.addFile.Size = new System.Drawing.Size(96, 37);
             this.addFile.TabIndex = 0;
@@ -132,6 +153,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.LightBlue;
+            this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.searchArticleTxt);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.searchSizeTxt);
@@ -267,6 +289,7 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.LightBlue;
+            this.panel3.Controls.Add(this.button1);
             this.panel3.Controls.Add(this.dateTimePickerTo);
             this.panel3.Controls.Add(this.getMonthlyReportBtn);
             this.panel3.Controls.Add(this.placeForMonthlyReport);
@@ -276,6 +299,17 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1167, 597);
             this.panel3.TabIndex = 1;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(917, 67);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(172, 32);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Summary Report";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // dateTimePickerTo
             // 
@@ -375,6 +409,7 @@
             this.button2.TabIndex = 6;
             this.button2.Text = "Add Issued Place";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // textBox2
             // 
@@ -401,6 +436,100 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
+            // chart
+            // 
+            chartArea8.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea8);
+            legend8.Name = "Legend1";
+            this.chart.Legends.Add(legend8);
+            this.chart.Location = new System.Drawing.Point(121, 110);
+            this.chart.Name = "chart";
+            series15.ChartArea = "ChartArea1";
+            series15.Legend = "Legend1";
+            series15.Name = "Received";
+            series16.ChartArea = "ChartArea1";
+            series16.Legend = "Legend1";
+            series16.Name = "Balance";
+            this.chart.Series.Add(series15);
+            this.chart.Series.Add(series16);
+            this.chart.Size = new System.Drawing.Size(980, 359);
+            this.chart.TabIndex = 1;
+            this.chart.Text = "chart1";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(60, 548);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(86, 20);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Received";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(213, 548);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(64, 20);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Issued";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(340, 548);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(77, 20);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Balance";
+            // 
+            // rcvLbl
+            // 
+            this.rcvLbl.AutoSize = true;
+            this.rcvLbl.BackColor = System.Drawing.Color.LightBlue;
+            this.rcvLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rcvLbl.Location = new System.Drawing.Point(64, 501);
+            this.rcvLbl.Name = "rcvLbl";
+            this.rcvLbl.Size = new System.Drawing.Size(61, 17);
+            this.rcvLbl.TabIndex = 5;
+            this.rcvLbl.Text = "label10";
+            // 
+            // issLbl
+            // 
+            this.issLbl.AutoSize = true;
+            this.issLbl.BackColor = System.Drawing.Color.LightBlue;
+            this.issLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.issLbl.Location = new System.Drawing.Point(214, 501);
+            this.issLbl.Name = "issLbl";
+            this.issLbl.Size = new System.Drawing.Size(61, 17);
+            this.issLbl.TabIndex = 6;
+            this.issLbl.Text = "label11";
+            // 
+            // balLbl
+            // 
+            this.balLbl.AutoSize = true;
+            this.balLbl.BackColor = System.Drawing.Color.LightBlue;
+            this.balLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.balLbl.Location = new System.Drawing.Point(341, 501);
+            this.balLbl.Name = "balLbl";
+            this.balLbl.Size = new System.Drawing.Size(61, 17);
+            this.balLbl.TabIndex = 7;
+            this.balLbl.Text = "label12";
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(1035, 171);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(89, 24);
+            this.button3.TabIndex = 13;
+            this.button3.Text = "Issue All";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -414,6 +543,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -428,6 +558,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -466,6 +597,15 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox searchArticleTxt;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label balLbl;
+        private System.Windows.Forms.Label issLbl;
+        private System.Windows.Forms.Label rcvLbl;
+        private System.Windows.Forms.Button button3;
     }
 }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IsabellaItems.Role
 {
-    class Batch
+    public class Batch
     {
         private int batch_id;
         private string color;
