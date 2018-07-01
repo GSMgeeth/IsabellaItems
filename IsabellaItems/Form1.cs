@@ -655,5 +655,10 @@ namespace IsabellaItems
             itemDataGridView.DataSource = getItems();
             setProgress();
         }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DBConnection.backupDB();
+        }
     }
 }
