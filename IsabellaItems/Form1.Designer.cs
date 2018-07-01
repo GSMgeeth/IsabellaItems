@@ -28,16 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.balLbl = new System.Windows.Forms.Label();
+            this.issLbl = new System.Windows.Forms.Label();
+            this.rcvLbl = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.addFile = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.searchArticleTxt = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.searchSizeTxt = new System.Windows.Forms.TextBox();
@@ -65,17 +73,10 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.dataGridViewIssuedPlace = new System.Windows.Forms.DataGridView();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.rcvLbl = new System.Windows.Forms.Label();
-            this.issLbl = new System.Windows.Forms.Label();
-            this.balLbl = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.itemDataGridView)).BeginInit();
@@ -87,7 +88,6 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -129,9 +129,92 @@
             this.panel1.Size = new System.Drawing.Size(1167, 597);
             this.panel1.TabIndex = 0;
             // 
+            // balLbl
+            // 
+            this.balLbl.AutoSize = true;
+            this.balLbl.BackColor = System.Drawing.Color.LightBlue;
+            this.balLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.balLbl.Location = new System.Drawing.Point(341, 501);
+            this.balLbl.Name = "balLbl";
+            this.balLbl.Size = new System.Drawing.Size(61, 17);
+            this.balLbl.TabIndex = 7;
+            this.balLbl.Text = "label12";
+            // 
+            // issLbl
+            // 
+            this.issLbl.AutoSize = true;
+            this.issLbl.BackColor = System.Drawing.Color.LightBlue;
+            this.issLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.issLbl.Location = new System.Drawing.Point(214, 501);
+            this.issLbl.Name = "issLbl";
+            this.issLbl.Size = new System.Drawing.Size(61, 17);
+            this.issLbl.TabIndex = 6;
+            this.issLbl.Text = "label11";
+            // 
+            // rcvLbl
+            // 
+            this.rcvLbl.AutoSize = true;
+            this.rcvLbl.BackColor = System.Drawing.Color.LightBlue;
+            this.rcvLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rcvLbl.Location = new System.Drawing.Point(64, 501);
+            this.rcvLbl.Name = "rcvLbl";
+            this.rcvLbl.Size = new System.Drawing.Size(61, 17);
+            this.rcvLbl.TabIndex = 5;
+            this.rcvLbl.Text = "label10";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(340, 548);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(77, 20);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Balance";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(213, 548);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(64, 20);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Issued";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(60, 548);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(86, 20);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Received";
+            // 
+            // chart
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart.Legends.Add(legend1);
+            this.chart.Location = new System.Drawing.Point(64, 19);
+            this.chart.Name = "chart";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Received";
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Balance";
+            this.chart.Series.Add(series1);
+            this.chart.Series.Add(series2);
+            this.chart.Size = new System.Drawing.Size(1077, 450);
+            this.chart.TabIndex = 1;
+            this.chart.Text = "chart1";
+            // 
             // addFile
             // 
-            this.addFile.Location = new System.Drawing.Point(507, 42);
+            this.addFile.Location = new System.Drawing.Point(1061, 531);
             this.addFile.Name = "addFile";
             this.addFile.Size = new System.Drawing.Size(96, 37);
             this.addFile.TabIndex = 0;
@@ -169,6 +252,17 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1167, 597);
             this.panel2.TabIndex = 1;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(1035, 171);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(89, 24);
+            this.button3.TabIndex = 13;
+            this.button3.Text = "Issue All";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // searchArticleTxt
             // 
@@ -436,100 +530,6 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
-            // chart
-            // 
-            chartArea10.Name = "ChartArea1";
-            this.chart.ChartAreas.Add(chartArea10);
-            legend10.Name = "Legend1";
-            this.chart.Legends.Add(legend10);
-            this.chart.Location = new System.Drawing.Point(121, 110);
-            this.chart.Name = "chart";
-            series19.ChartArea = "ChartArea1";
-            series19.Legend = "Legend1";
-            series19.Name = "Received";
-            series20.ChartArea = "ChartArea1";
-            series20.Legend = "Legend1";
-            series20.Name = "Balance";
-            this.chart.Series.Add(series19);
-            this.chart.Series.Add(series20);
-            this.chart.Size = new System.Drawing.Size(980, 359);
-            this.chart.TabIndex = 1;
-            this.chart.Text = "chart1";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(60, 548);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(86, 20);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Received";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(213, 548);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(64, 20);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Issued";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(340, 548);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(77, 20);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Balance";
-            // 
-            // rcvLbl
-            // 
-            this.rcvLbl.AutoSize = true;
-            this.rcvLbl.BackColor = System.Drawing.Color.LightBlue;
-            this.rcvLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rcvLbl.Location = new System.Drawing.Point(64, 501);
-            this.rcvLbl.Name = "rcvLbl";
-            this.rcvLbl.Size = new System.Drawing.Size(61, 17);
-            this.rcvLbl.TabIndex = 5;
-            this.rcvLbl.Text = "label10";
-            // 
-            // issLbl
-            // 
-            this.issLbl.AutoSize = true;
-            this.issLbl.BackColor = System.Drawing.Color.LightBlue;
-            this.issLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.issLbl.Location = new System.Drawing.Point(214, 501);
-            this.issLbl.Name = "issLbl";
-            this.issLbl.Size = new System.Drawing.Size(61, 17);
-            this.issLbl.TabIndex = 6;
-            this.issLbl.Text = "label11";
-            // 
-            // balLbl
-            // 
-            this.balLbl.AutoSize = true;
-            this.balLbl.BackColor = System.Drawing.Color.LightBlue;
-            this.balLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.balLbl.Location = new System.Drawing.Point(341, 501);
-            this.balLbl.Name = "balLbl";
-            this.balLbl.Size = new System.Drawing.Size(61, 17);
-            this.balLbl.TabIndex = 7;
-            this.balLbl.Text = "label12";
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(1035, 171);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(89, 24);
-            this.button3.TabIndex = 13;
-            this.button3.Text = "Issue All";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -545,6 +545,7 @@
             this.tabPage1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -559,7 +560,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIssuedPlace)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.ResumeLayout(false);
 
         }
