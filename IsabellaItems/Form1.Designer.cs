@@ -42,21 +42,16 @@
             this.label7 = new System.Windows.Forms.Label();
             this.showAllBtn = new System.Windows.Forms.Button();
             this.searchBtn = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.datePicker = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.issuedCmb = new System.Windows.Forms.ComboBox();
             this.itemDataGridView = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.getDailyReportBtn = new System.Windows.Forms.Button();
-            this.typeForDailyReport = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.dateTimePickerForDailyReport = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerTo = new System.Windows.Forms.DateTimePicker();
             this.getMonthlyReportBtn = new System.Windows.Forms.Button();
-            this.typeForMonthlyReport = new System.Windows.Forms.ComboBox();
+            this.placeForMonthlyReport = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.dateTimePickerForMonthlyReport = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerFrom = new System.Windows.Forms.DateTimePicker();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel4 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -145,8 +140,6 @@
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.showAllBtn);
             this.panel2.Controls.Add(this.searchBtn);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.datePicker);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.issuedCmb);
             this.panel2.Controls.Add(this.itemDataGridView);
@@ -157,7 +150,7 @@
             // 
             // searchArticleTxt
             // 
-            this.searchArticleTxt.Location = new System.Drawing.Point(992, 42);
+            this.searchArticleTxt.Location = new System.Drawing.Point(460, 45);
             this.searchArticleTxt.Name = "searchArticleTxt";
             this.searchArticleTxt.Size = new System.Drawing.Size(132, 22);
             this.searchArticleTxt.TabIndex = 12;
@@ -166,7 +159,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(989, 22);
+            this.label9.Location = new System.Drawing.Point(457, 25);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(64, 17);
             this.label9.TabIndex = 11;
@@ -174,7 +167,7 @@
             // 
             // searchSizeTxt
             // 
-            this.searchSizeTxt.Location = new System.Drawing.Point(814, 42);
+            this.searchSizeTxt.Location = new System.Drawing.Point(814, 44);
             this.searchSizeTxt.Name = "searchSizeTxt";
             this.searchSizeTxt.Size = new System.Drawing.Size(132, 22);
             this.searchSizeTxt.TabIndex = 10;
@@ -183,7 +176,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(811, 22);
+            this.label8.Location = new System.Drawing.Point(811, 24);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(49, 17);
             this.label8.TabIndex = 9;
@@ -191,7 +184,7 @@
             // 
             // searchColortxt
             // 
-            this.searchColortxt.Location = new System.Drawing.Point(633, 43);
+            this.searchColortxt.Location = new System.Drawing.Point(633, 45);
             this.searchColortxt.Name = "searchColortxt";
             this.searchColortxt.Size = new System.Drawing.Size(132, 22);
             this.searchColortxt.TabIndex = 8;
@@ -200,7 +193,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(630, 22);
+            this.label7.Location = new System.Drawing.Point(630, 24);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(56, 17);
             this.label7.TabIndex = 7;
@@ -227,23 +220,6 @@
             this.searchBtn.Text = "Search";
             this.searchBtn.UseVisualStyleBackColor = true;
             this.searchBtn.Click += new System.EventHandler(this.searchBtn_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(298, 22);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(102, 17);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Select Date :";
-            // 
-            // datePicker
-            // 
-            this.datePicker.Location = new System.Drawing.Point(300, 45);
-            this.datePicker.Name = "datePicker";
-            this.datePicker.Size = new System.Drawing.Size(255, 22);
-            this.datePicker.TabIndex = 3;
             // 
             // label1
             // 
@@ -291,62 +267,27 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.LightBlue;
-            this.panel3.Controls.Add(this.getDailyReportBtn);
-            this.panel3.Controls.Add(this.typeForDailyReport);
-            this.panel3.Controls.Add(this.label4);
-            this.panel3.Controls.Add(this.dateTimePickerForDailyReport);
+            this.panel3.Controls.Add(this.dateTimePickerTo);
             this.panel3.Controls.Add(this.getMonthlyReportBtn);
-            this.panel3.Controls.Add(this.typeForMonthlyReport);
+            this.panel3.Controls.Add(this.placeForMonthlyReport);
             this.panel3.Controls.Add(this.label3);
-            this.panel3.Controls.Add(this.dateTimePickerForMonthlyReport);
+            this.panel3.Controls.Add(this.dateTimePickerFrom);
             this.panel3.Location = new System.Drawing.Point(-2, 4);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1167, 597);
             this.panel3.TabIndex = 1;
             // 
-            // getDailyReportBtn
+            // dateTimePickerTo
             // 
-            this.getDailyReportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.getDailyReportBtn.Location = new System.Drawing.Point(509, 160);
-            this.getDailyReportBtn.Name = "getDailyReportBtn";
-            this.getDailyReportBtn.Size = new System.Drawing.Size(122, 32);
-            this.getDailyReportBtn.TabIndex = 7;
-            this.getDailyReportBtn.Text = "Get Report";
-            this.getDailyReportBtn.UseVisualStyleBackColor = true;
-            // 
-            // typeForDailyReport
-            // 
-            this.typeForDailyReport.FormattingEnabled = true;
-            this.typeForDailyReport.Items.AddRange(new object[] {
-            "All",
-            "Received",
-            "Issued"});
-            this.typeForDailyReport.Location = new System.Drawing.Point(296, 168);
-            this.typeForDailyReport.Name = "typeForDailyReport";
-            this.typeForDailyReport.Size = new System.Drawing.Size(169, 24);
-            this.typeForDailyReport.TabIndex = 6;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(8, 137);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(124, 20);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Daily Reports";
-            // 
-            // dateTimePickerForDailyReport
-            // 
-            this.dateTimePickerForDailyReport.Location = new System.Drawing.Point(8, 170);
-            this.dateTimePickerForDailyReport.Name = "dateTimePickerForDailyReport";
-            this.dateTimePickerForDailyReport.Size = new System.Drawing.Size(268, 22);
-            this.dateTimePickerForDailyReport.TabIndex = 4;
+            this.dateTimePickerTo.Location = new System.Drawing.Point(282, 77);
+            this.dateTimePickerTo.Name = "dateTimePickerTo";
+            this.dateTimePickerTo.Size = new System.Drawing.Size(268, 22);
+            this.dateTimePickerTo.TabIndex = 4;
             // 
             // getMonthlyReportBtn
             // 
             this.getMonthlyReportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.getMonthlyReportBtn.Location = new System.Drawing.Point(509, 67);
+            this.getMonthlyReportBtn.Location = new System.Drawing.Point(788, 67);
             this.getMonthlyReportBtn.Name = "getMonthlyReportBtn";
             this.getMonthlyReportBtn.Size = new System.Drawing.Size(122, 32);
             this.getMonthlyReportBtn.TabIndex = 3;
@@ -354,17 +295,13 @@
             this.getMonthlyReportBtn.UseVisualStyleBackColor = true;
             this.getMonthlyReportBtn.Click += new System.EventHandler(this.getMonthlyReportBtn_Click);
             // 
-            // typeForMonthlyReport
+            // placeForMonthlyReport
             // 
-            this.typeForMonthlyReport.FormattingEnabled = true;
-            this.typeForMonthlyReport.Items.AddRange(new object[] {
-            "All",
-            "Received",
-            "Issued"});
-            this.typeForMonthlyReport.Location = new System.Drawing.Point(296, 75);
-            this.typeForMonthlyReport.Name = "typeForMonthlyReport";
-            this.typeForMonthlyReport.Size = new System.Drawing.Size(169, 24);
-            this.typeForMonthlyReport.TabIndex = 2;
+            this.placeForMonthlyReport.FormattingEnabled = true;
+            this.placeForMonthlyReport.Location = new System.Drawing.Point(564, 75);
+            this.placeForMonthlyReport.Name = "placeForMonthlyReport";
+            this.placeForMonthlyReport.Size = new System.Drawing.Size(169, 24);
+            this.placeForMonthlyReport.TabIndex = 2;
             // 
             // label3
             // 
@@ -372,16 +309,16 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(8, 44);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(146, 20);
+            this.label3.Size = new System.Drawing.Size(161, 20);
             this.label3.TabIndex = 1;
-            this.label3.Text = "Monthly Reports";
+            this.label3.Text = "Select Date range";
             // 
-            // dateTimePickerForMonthlyReport
+            // dateTimePickerFrom
             // 
-            this.dateTimePickerForMonthlyReport.Location = new System.Drawing.Point(8, 77);
-            this.dateTimePickerForMonthlyReport.Name = "dateTimePickerForMonthlyReport";
-            this.dateTimePickerForMonthlyReport.Size = new System.Drawing.Size(268, 22);
-            this.dateTimePickerForMonthlyReport.TabIndex = 0;
+            this.dateTimePickerFrom.Location = new System.Drawing.Point(8, 77);
+            this.dateTimePickerFrom.Name = "dateTimePickerFrom";
+            this.dateTimePickerFrom.Size = new System.Drawing.Size(268, 22);
+            this.dateTimePickerFrom.TabIndex = 0;
             // 
             // tabPage4
             // 
@@ -510,18 +447,13 @@
         private System.Windows.Forms.DataGridView itemDataGridView;
         private System.Windows.Forms.ComboBox issuedCmb;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.DateTimePicker datePicker;
         private System.Windows.Forms.Button showAllBtn;
         private System.Windows.Forms.Button searchBtn;
         private System.Windows.Forms.Button getMonthlyReportBtn;
-        private System.Windows.Forms.ComboBox typeForMonthlyReport;
+        private System.Windows.Forms.ComboBox placeForMonthlyReport;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.DateTimePicker dateTimePickerForMonthlyReport;
-        private System.Windows.Forms.Button getDailyReportBtn;
-        private System.Windows.Forms.ComboBox typeForDailyReport;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.DateTimePicker dateTimePickerForDailyReport;
+        private System.Windows.Forms.DateTimePicker dateTimePickerFrom;
+        private System.Windows.Forms.DateTimePicker dateTimePickerTo;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button2;

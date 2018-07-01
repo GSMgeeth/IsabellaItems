@@ -33,6 +33,7 @@ namespace IsabellaItems.Report
             table.Columns.Add("Size", typeof(string));
             table.Columns.Add("Article", typeof(string));
             table.Columns.Add("Total Quantity", typeof(int));
+            table.Columns.Add("Issued Quantity", typeof(int));
             table.Columns.Add("Balance Quantity", typeof(int));
 
             try
@@ -55,9 +56,9 @@ namespace IsabellaItems.Report
                         }
 
                         if (o != null)
-                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), reader.GetInt32("balance"));
+                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), reader.GetInt32("total") - reader.GetInt32("balance"), reader.GetInt32("balance"));
                         else
-                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), 0);
+                            table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("total"), 0, reader.GetInt32("total"));
                     }
 
                     reader.Close();

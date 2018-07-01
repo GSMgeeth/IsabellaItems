@@ -12,7 +12,7 @@
   <xs:element name="DataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSet" msprop:Generator_UserDSName="DataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Item" msprop:Generator_TableClassName="ItemDataTable" msprop:Generator_TableVarName="tableItem" msprop:Generator_TablePropName="Item" msprop:Generator_RowDeletingName="ItemRowDeleting" msprop:Generator_RowChangingName="ItemRowChanging" msprop:Generator_RowEvHandlerName="ItemRowChangeEventHandler" msprop:Generator_RowDeletedName="ItemRowDeleted" msprop:Generator_UserTableName="Item" msprop:Generator_RowChangedName="ItemRowChanged" msprop:Generator_RowEvArgName="ItemRowChangeEvent" msprop:Generator_RowClassName="ItemRow">
+        <xs:element name="Item" msprop:Generator_TableClassName="ItemDataTable" msprop:Generator_TableVarName="tableItem" msprop:Generator_RowChangedName="ItemRowChanged" msprop:Generator_TablePropName="Item" msprop:Generator_RowDeletingName="ItemRowDeleting" msprop:Generator_RowChangingName="ItemRowChanging" msprop:Generator_RowEvHandlerName="ItemRowChangeEventHandler" msprop:Generator_RowDeletedName="ItemRowDeleted" msprop:Generator_RowClassName="ItemRow" msprop:Generator_UserTableName="Item" msprop:Generator_RowEvArgName="ItemRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Color" msprop:Generator_ColumnVarNameInTable="columnColor" msprop:Generator_ColumnPropNameInRow="Color" msprop:Generator_ColumnPropNameInTable="ColorColumn" msprop:Generator_UserColumnName="Color" type="xs:string" minOccurs="0" />
@@ -21,6 +21,7 @@
               <xs:element name="Total_x0020_Quantity" msprop:Generator_ColumnVarNameInTable="columnTotal_Quantity" msprop:Generator_ColumnPropNameInRow="Total_Quantity" msprop:Generator_ColumnPropNameInTable="Total_QuantityColumn" msprop:Generator_UserColumnName="Total Quantity" type="xs:int" minOccurs="0" />
               <xs:element name="Balance_x0020_Quantity" msprop:Generator_ColumnVarNameInTable="columnBalance_Quantity" msprop:Generator_ColumnPropNameInRow="Balance_Quantity" msprop:Generator_ColumnPropNameInTable="Balance_QuantityColumn" msprop:Generator_UserColumnName="Balance Quantity" type="xs:int" minOccurs="0" />
               <xs:element name="Item_id" msprop:Generator_ColumnVarNameInTable="columnItem_id" msprop:Generator_ColumnPropNameInRow="Item_id" msprop:Generator_ColumnPropNameInTable="Item_idColumn" msprop:Generator_UserColumnName="Item_id" type="xs:int" />
+              <xs:element name="Issued_x0020_Quantity" msprop:Generator_ColumnVarNameInTable="columnIssued_Quantity" msprop:Generator_ColumnPropNameInRow="Issued_Quantity" msprop:Generator_ColumnPropNameInTable="Issued_QuantityColumn" msprop:Generator_UserColumnName="Issued Quantity" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

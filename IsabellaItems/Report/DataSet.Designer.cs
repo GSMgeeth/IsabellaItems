@@ -291,6 +291,8 @@ namespace IsabellaItems.Report {
             
             private global::System.Data.DataColumn columnItem_id;
             
+            private global::System.Data.DataColumn columnIssued_Quantity;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public ItemDataTable() {
@@ -374,6 +376,14 @@ namespace IsabellaItems.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn Issued_QuantityColumn {
+                get {
+                    return this.columnIssued_Quantity;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -409,7 +419,7 @@ namespace IsabellaItems.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public ItemRow AddItemRow(string Color, string Size, string Article, int Total_Quantity, int Balance_Quantity, int Item_id) {
+            public ItemRow AddItemRow(string Color, string Size, string Article, int Total_Quantity, int Balance_Quantity, int Item_id, int Issued_Quantity) {
                 ItemRow rowItemRow = ((ItemRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Color,
@@ -417,7 +427,8 @@ namespace IsabellaItems.Report {
                         Article,
                         Total_Quantity,
                         Balance_Quantity,
-                        Item_id};
+                        Item_id,
+                        Issued_Quantity};
                 rowItemRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowItemRow);
                 return rowItemRow;
@@ -453,6 +464,7 @@ namespace IsabellaItems.Report {
                 this.columnTotal_Quantity = base.Columns["Total Quantity"];
                 this.columnBalance_Quantity = base.Columns["Balance Quantity"];
                 this.columnItem_id = base.Columns["Item_id"];
+                this.columnIssued_Quantity = base.Columns["Issued Quantity"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -470,6 +482,8 @@ namespace IsabellaItems.Report {
                 base.Columns.Add(this.columnBalance_Quantity);
                 this.columnItem_id = new global::System.Data.DataColumn("Item_id", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnItem_id);
+                this.columnIssued_Quantity = new global::System.Data.DataColumn("Issued Quantity", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnIssued_Quantity);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("ItemKey1", new global::System.Data.DataColumn[] {
                                 this.columnItem_id}, true));
                 this.columnItem_id.AllowDBNull = false;
@@ -714,6 +728,22 @@ namespace IsabellaItems.Report {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public int Issued_Quantity {
+                get {
+                    try {
+                        return ((int)(this[this.tableItem.Issued_QuantityColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Issued Quantity\' in table \'Item\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableItem.Issued_QuantityColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsColorNull() {
                 return this.IsNull(this.tableItem.ColorColumn);
             }
@@ -770,6 +800,18 @@ namespace IsabellaItems.Report {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetBalance_QuantityNull() {
                 this[this.tableItem.Balance_QuantityColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsIssued_QuantityNull() {
+                return this.IsNull(this.tableItem.Issued_QuantityColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetIssued_QuantityNull() {
+                this[this.tableItem.Issued_QuantityColumn] = global::System.Convert.DBNull;
             }
         }
         

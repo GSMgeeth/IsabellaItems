@@ -78,7 +78,7 @@ namespace IsabellaItems.Core
         {
             try
             {
-                string file = "D:/SQItems/Backup.sql";
+                string file = "D:/PackingSocks/Backup.sql";
 
                 if (conn != null)
                 {
