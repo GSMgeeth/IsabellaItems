@@ -37,9 +37,14 @@ namespace IsabellaItems
             int received = 0;
             int issued = 0;
 
+            MySqlDataReader readerRcv = null;
+            MySqlDataReader readerIss = null;
+            MySqlDataReader reader = null;
+            MySqlDataReader readerTwo = null;
+
             try
             {
-                MySqlDataReader readerRcv = DBConnection.getData("select SUM(receivedQty) AS received from received");
+                readerRcv = DBConnection.getData("select IFNULL(SUM(receivedQty), 0) AS received from received");
 
                 if (readerRcv.HasRows)
                 {
@@ -50,7 +55,7 @@ namespace IsabellaItems
 
                     readerRcv.Close();
 
-                    MySqlDataReader readerIss = DBConnection.getData("select SUM(issuedQty) AS issued from issued");
+                    readerIss = DBConnection.getData("select IFNULL(SUM(issuedQty), 0) AS issued from issued");
 
                     while (readerIss.Read())
                     {
@@ -59,8 +64,16 @@ namespace IsabellaItems
 
                     readerIss.Close();
                 }
+                else
+                {
+                    readerRcv.Close();
+                }
 
                 int balance = received - issued;
+
+                rcvLbl.Text = " ";
+                issLbl.Text = " ";
+                balLbl.Text = " ";
 
                 rcvLbl.Text = "" + received;
                 issLbl.Text = "" + issued;
@@ -78,7 +91,7 @@ namespace IsabellaItems
                     int chartRcv = 0;
                     int chartIss = 0;
 
-                    MySqlDataReader reader = DBConnection.getData("select IFNULL(SUM(receivedQty),0) AS received from received where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
+                    reader = DBConnection.getData("select IFNULL(SUM(receivedQty),0) AS received from received where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
 
                     if (reader.HasRows)
                     {
@@ -89,7 +102,7 @@ namespace IsabellaItems
 
                         reader.Close();
 
-                        MySqlDataReader readerTwo = DBConnection.getData("select IFNULL(SUM(issuedQty),0) AS issued from issued where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
+                        readerTwo = DBConnection.getData("select IFNULL(SUM(issuedQty),0) AS issued from issued where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
 
                         while (readerTwo.Read())
                         {
@@ -97,18 +110,32 @@ namespace IsabellaItems
                         }
 
                         readerTwo.Close();
-
-                        chart.Series["Received"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv);
-                        chart.Series["Balance"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv - chartIss);
-
-                        i--;
                     }
+                    else
+                    {
+                        reader.Close();
+                    }
+
+                    chart.Series["Received"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv);
+                    chart.Series["Balance"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv - chartIss);
+
+                    i--;
 
                 } while (i >= 0);
             }
             catch (Exception)
             {
-                throw;
+                if (readerRcv != null)
+                    readerRcv.Close();
+
+                if (readerIss != null)
+                    readerIss.Close();
+
+                if (reader != null)
+                    reader.Close();
+
+                if (readerTwo != null)
+                    readerTwo.Close();
             }
         }
 
@@ -137,16 +164,19 @@ namespace IsabellaItems
             try
             {
                 MySqlDataReader reader = DBConnection.getData("select * from place");
-
-                issuedCmb.Items.Add("All");
-                placeForMonthlyReport.Items.Add("All");
-
-                while (reader.Read())
+                
+                if (reader.HasRows)
                 {
-                    issuedCmb.Items.Add(reader.GetString("place"));
-                    placeForMonthlyReport.Items.Add(reader.GetString("place"));
-                }
+                    issuedCmb.Items.Add("All");
+                    placeForMonthlyReport.Items.Add("All");
 
+                    while (reader.Read())
+                    {
+                        issuedCmb.Items.Add(reader.GetString("place"));
+                        placeForMonthlyReport.Items.Add(reader.GetString("place"));
+                    }
+                }
+                
                 reader.Close();
             }
             catch (Exception)
@@ -169,13 +199,11 @@ namespace IsabellaItems
                 }
                 else
                 {
-                    table.Load(null);
+                    reader.Close();
                 }
             }
             catch (Exception)
             {
-                table.Load(null);
-
                 throw;
             }
 
@@ -200,13 +228,11 @@ namespace IsabellaItems
                 }
                 else
                 {
-                    table.Load(null);
+                    reader.Close();
                 }
             }
             catch (Exception)
             {
-                table.Load(null);
-
                 throw;
             }
             
@@ -241,11 +267,18 @@ namespace IsabellaItems
                     while (ws.Cells[x, 1].Value2 != null)
                     {
                         string article = ws.Cells[x, 1].Value2;
-                        //double tmpColor = ws.Cells[x, 2].Value2;
-                        string color = ws.Cells[x, 2].Value2;
+                        string color;
+                        
+                        if (ws.Cells[x, 2].Value2 is double)
+                        {
+                            color = "" + (int)ws.Cells[x, 2].Value2;
+                        }
+                        else
+                        {
+                            color = ws.Cells[x, 2].Value2;
+                        }
+                        
                         string size = ws.Cells[x, 3].Value2;
-
-                        //DataTextBox.Text = "article : " + article + "\nsize : " + size + "\nColor : " + color + "\n";
 
                         Batch batch = Database.getBatch(color, size, article);
 
@@ -254,8 +287,6 @@ namespace IsabellaItems
                         try
                         {
                             qty = ws.Cells[x, 5].Value2;
-
-                            //DataTextBox.AppendText("Qty : " + qty + "\n");
 
                             Received rcv = new Received(batch, DateTime.Now, (int)qty);
 
@@ -267,17 +298,15 @@ namespace IsabellaItems
                         {
                             MessageBox.Show("Something wrong with the qty cell in excel file!\n" + exc, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                        finally
-                        {
-                            itemDataGridView.DataSource = getItems();
-                            setProgress();
-                        }
                     }
+
+                    itemDataGridView.DataSource = getItems();
+                    setProgress();
                 }
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Something wrong with the excel file!", "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Something wrong with the excel file!\n" + exception, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
