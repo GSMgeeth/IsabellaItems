@@ -34,69 +34,82 @@ namespace IsabellaItems
 
         private void setProgress()
         {
-            int received = 100;
-            int issued = 50;
+            int received = 0;
+            int issued = 0;
 
-            MySqlDataReader readerRcv = DBConnection.getData("select SUM(receivedQty) AS received from received");
-
-            while (readerRcv.Read())
+            try
             {
-                received = readerRcv.GetInt32("received");
-            }
+                MySqlDataReader readerRcv = DBConnection.getData("select SUM(receivedQty) AS received from received");
 
-            readerRcv.Close();
-
-            MySqlDataReader readerIss = DBConnection.getData("select SUM(issuedQty) AS issued from issued");
-
-            while (readerIss.Read())
-            {
-                issued = readerIss.GetInt32("issued");
-            }
-
-            readerIss.Close();
-
-            int balance = received - issued;
-
-            rcvLbl.Text = "" + received;
-            issLbl.Text = "" + issued;
-            balLbl.Text = "" + balance;
-
-            string day = DateTime.Now.DayOfWeek.ToString();
-
-            int noOfDay = getDayeNo(day);
-            int i = noOfDay;
-
-            DateTime date = DateTime.Today;
-
-            do
-            {
-                int chartRcv = 0;
-                int chartIss = 0;
-
-                MySqlDataReader reader = DBConnection.getData("select IFNULL(SUM(receivedQty),0) AS received from received where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
-
-                while (reader.Read())
+                if (readerRcv.HasRows)
                 {
-                    chartRcv = reader.GetInt32("received");
+                    while (readerRcv.Read())
+                    {
+                        received = readerRcv.GetInt32("received");
+                    }
+
+                    readerRcv.Close();
+
+                    MySqlDataReader readerIss = DBConnection.getData("select SUM(issuedQty) AS issued from issued");
+
+                    while (readerIss.Read())
+                    {
+                        issued = readerIss.GetInt32("issued");
+                    }
+
+                    readerIss.Close();
                 }
 
-                reader.Close();
+                int balance = received - issued;
 
-                MySqlDataReader readerTwo = DBConnection.getData("select IFNULL(SUM(issuedQty),0) AS issued from issued where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
+                rcvLbl.Text = "" + received;
+                issLbl.Text = "" + issued;
+                balLbl.Text = "" + balance;
 
-                while (readerTwo.Read())
+                string day = DateTime.Now.DayOfWeek.ToString();
+
+                int noOfDay = getDayeNo(day);
+                int i = noOfDay;
+
+                DateTime date = DateTime.Today;
+
+                do
                 {
-                    chartIss = readerTwo.GetInt32("issued");
-                }
+                    int chartRcv = 0;
+                    int chartIss = 0;
 
-                readerTwo.Close();
+                    MySqlDataReader reader = DBConnection.getData("select IFNULL(SUM(receivedQty),0) AS received from received where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
 
-                chart.Series["Received"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv);
-                chart.Series["Balance"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv - chartIss);
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            chartRcv = reader.GetInt32("received");
+                        }
 
-                i--;
+                        reader.Close();
 
-            } while (i >= 0) ;
+                        MySqlDataReader readerTwo = DBConnection.getData("select IFNULL(SUM(issuedQty),0) AS issued from issued where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
+
+                        while (readerTwo.Read())
+                        {
+                            chartIss = readerTwo.GetInt32("issued");
+                        }
+
+                        readerTwo.Close();
+
+                        chart.Series["Received"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv);
+                        chart.Series["Balance"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv - chartIss);
+
+                        i--;
+                    }
+
+                } while (i >= 0);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private int getDayeNo(string day)
@@ -121,27 +134,50 @@ namespace IsabellaItems
 
         private void fillIssuedCmb()
         {
-            MySqlDataReader reader = DBConnection.getData("select * from place");
-
-            issuedCmb.Items.Add("All");
-            placeForMonthlyReport.Items.Add("All");
-
-            while (reader.Read())
+            try
             {
-                issuedCmb.Items.Add(reader.GetString("place"));
-                placeForMonthlyReport.Items.Add(reader.GetString("place"));
-            }
+                MySqlDataReader reader = DBConnection.getData("select * from place");
 
-            reader.Close();
+                issuedCmb.Items.Add("All");
+                placeForMonthlyReport.Items.Add("All");
+
+                while (reader.Read())
+                {
+                    issuedCmb.Items.Add(reader.GetString("place"));
+                    placeForMonthlyReport.Items.Add(reader.GetString("place"));
+                }
+
+                reader.Close();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private System.Data.DataTable getIssuedPlace()
         {
             System.Data.DataTable table = new System.Data.DataTable();
 
-            MySqlDataReader reader = DBConnection.getData("select * from place");
+            try
+            {
+                MySqlDataReader reader = DBConnection.getData("select * from place");
 
-            table.Load(reader);
+                if (reader.HasRows)
+                {
+                    table.Load(reader);
+                }
+                else
+                {
+                    table.Load(null);
+                }
+            }
+            catch (Exception)
+            {
+                table.Load(null);
+
+                throw;
+            }
 
             return table;
         }
@@ -150,14 +186,30 @@ namespace IsabellaItems
         {
             System.Data.DataTable table = new System.Data.DataTable();
 
-            MySqlDataReader reader = DBConnection.getData("SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+            try
+            {
+                MySqlDataReader reader = DBConnection.getData("SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                 "FROM received r " +
                 "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
                 "INNER JOIN batch b on r.batch_id=b.batch_id " +
                 "GROUP BY r.batch_id;");
 
-            table.Load(reader);
+                if (reader.HasRows)
+                {
+                    table.Load(reader);
+                }
+                else
+                {
+                    table.Load(null);
+                }
+            }
+            catch (Exception)
+            {
+                table.Load(null);
 
+                throw;
+            }
+            
             return table;
         }
         
