@@ -1,4 +1,5 @@
-﻿using IsabellaItems.Core;
+﻿using CrystalDecisions.Shared;
+using IsabellaItems.Core;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -69,8 +70,30 @@ namespace IsabellaItems.Report
 
                         rpt.Database.Tables["Item"].SetDataSource(table);
 
-                        ItemsCrystalReportViewer.ReportSource = null;
-                        ItemsCrystalReportViewer.ReportSource = rpt;
+                        ExportOptions exportOptions;
+                        DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
+
+                        SaveFileDialog sfd = new SaveFileDialog();
+
+                        sfd.Filter = "Pdf Files|*.pdf";
+
+                        if (sfd.ShowDialog() == DialogResult.OK)
+                        {
+                            diskFileDestinationOptions.DiskFileName = sfd.FileName;
+                        }
+
+                        exportOptions = rpt.ExportOptions;
+                        {
+                            exportOptions.ExportDestinationType = ExportDestinationType.DiskFile;
+                            exportOptions.ExportFormatType = ExportFormatType.PortableDocFormat;
+                            exportOptions.DestinationOptions = diskFileDestinationOptions;
+                            exportOptions.ExportFormatOptions = new PdfRtfWordFormatOptions();
+                        }
+
+                        rpt.Export();
+
+                        //ItemsCrystalReportViewer.ReportSource = null;
+                        //ItemsCrystalReportViewer.ReportSource = rpt;
                     }
                     else
                     {
@@ -81,7 +104,7 @@ namespace IsabellaItems.Report
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 }
             }
             else if (type == 0)
@@ -128,8 +151,30 @@ namespace IsabellaItems.Report
 
                         rpt.Database.Tables["Item"].SetDataSource(table);
 
-                        ItemsCrystalReportViewer.ReportSource = null;
-                        ItemsCrystalReportViewer.ReportSource = rpt;
+                        ExportOptions exportOptions;
+                        DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
+
+                        SaveFileDialog sfd = new SaveFileDialog();
+
+                        sfd.Filter = "Pdf Files|*.pdf";
+
+                        if (sfd.ShowDialog() == DialogResult.OK)
+                        {
+                            diskFileDestinationOptions.DiskFileName = sfd.FileName;
+                        }
+
+                        exportOptions = rpt.ExportOptions;
+                        {
+                            exportOptions.ExportDestinationType = ExportDestinationType.DiskFile;
+                            exportOptions.ExportFormatType = ExportFormatType.PortableDocFormat;
+                            exportOptions.DestinationOptions = diskFileDestinationOptions;
+                            exportOptions.ExportFormatOptions = new PdfRtfWordFormatOptions();
+                        }
+
+                        rpt.Export();
+
+                        //ItemsCrystalReportViewer.ReportSource = null;
+                        //ItemsCrystalReportViewer.ReportSource = rpt;
                     }
                     else
                     {
@@ -140,7 +185,7 @@ namespace IsabellaItems.Report
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 }
             }
             else if (type == 2)
@@ -189,8 +234,30 @@ namespace IsabellaItems.Report
 
                         rpt.Database.Tables["Summary"].SetDataSource(table);
 
-                        ItemsCrystalReportViewer.ReportSource = null;
-                        ItemsCrystalReportViewer.ReportSource = rpt;
+                        ExportOptions exportOptions;
+                        DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
+
+                        SaveFileDialog sfd = new SaveFileDialog();
+
+                        sfd.Filter = "Pdf Files|*.pdf";
+
+                        if (sfd.ShowDialog() == DialogResult.OK)
+                        {
+                            diskFileDestinationOptions.DiskFileName = sfd.FileName;
+                        }
+
+                        exportOptions = rpt.ExportOptions;
+                        {
+                            exportOptions.ExportDestinationType = ExportDestinationType.DiskFile;
+                            exportOptions.ExportFormatType = ExportFormatType.PortableDocFormat;
+                            exportOptions.DestinationOptions = diskFileDestinationOptions;
+                            exportOptions.ExportFormatOptions = new PdfRtfWordFormatOptions();
+                        }
+
+                        rpt.Export();
+
+                        //ItemsCrystalReportViewer.ReportSource = null;
+                        //ItemsCrystalReportViewer.ReportSource = rpt;
                     }
                     else
                     {
@@ -201,7 +268,7 @@ namespace IsabellaItems.Report
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("No records\n" + ex.Message + "\n" + ex.StackTrace, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 }
             }
         }
