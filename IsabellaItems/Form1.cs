@@ -681,7 +681,7 @@ namespace IsabellaItems
 
             ReportForm rptFrm = new ReportForm(qry, type);
 
-            //rptFrm.Show();
+            rptFrm.Show();
         }
 
         private void itemDataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -708,7 +708,7 @@ namespace IsabellaItems
 
             ReportForm rptFrm = new ReportForm(qry, 2);
 
-            //rptFrm.Show();
+            rptFrm.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
