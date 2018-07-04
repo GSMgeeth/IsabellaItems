@@ -69,7 +69,7 @@ namespace IsabellaItems.Report
                         Report.CrystalReportIssued rpt = new Report.CrystalReportIssued();
 
                         rpt.Database.Tables["Item"].SetDataSource(table);
-
+                        /*
                         ExportOptions exportOptions;
                         DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
 
@@ -91,9 +91,9 @@ namespace IsabellaItems.Report
                         }
 
                         rpt.Export();
-
-                        //ItemsCrystalReportViewer.ReportSource = null;
-                        //ItemsCrystalReportViewer.ReportSource = rpt;
+                        */
+                        ItemsCrystalReportViewer.ReportSource = null;
+                        ItemsCrystalReportViewer.ReportSource = rpt;
                     }
                     else
                     {
@@ -104,7 +104,7 @@ namespace IsabellaItems.Report
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show("" + ex, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else if (type == 0)
@@ -150,7 +150,7 @@ namespace IsabellaItems.Report
                         Report.CrystalReportOfItems rpt = new Report.CrystalReportOfItems();
 
                         rpt.Database.Tables["Item"].SetDataSource(table);
-
+                        /*
                         ExportOptions exportOptions;
                         DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
 
@@ -172,9 +172,9 @@ namespace IsabellaItems.Report
                         }
 
                         rpt.Export();
-
-                        //ItemsCrystalReportViewer.ReportSource = null;
-                        //ItemsCrystalReportViewer.ReportSource = rpt;
+                        */
+                        ItemsCrystalReportViewer.ReportSource = null;
+                        ItemsCrystalReportViewer.ReportSource = rpt;
                     }
                     else
                     {
@@ -185,7 +185,7 @@ namespace IsabellaItems.Report
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show("" + ex, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else if (type == 2)
@@ -233,7 +233,7 @@ namespace IsabellaItems.Report
                         Report.CrystalReportSummary rpt = new Report.CrystalReportSummary();
 
                         rpt.Database.Tables["Summary"].SetDataSource(table);
-
+                        /*
                         ExportOptions exportOptions;
                         DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
 
@@ -255,9 +255,9 @@ namespace IsabellaItems.Report
                         }
 
                         rpt.Export();
-
-                        //ItemsCrystalReportViewer.ReportSource = null;
-                        //ItemsCrystalReportViewer.ReportSource = rpt;
+                        */
+                        ItemsCrystalReportViewer.ReportSource = null;
+                        ItemsCrystalReportViewer.ReportSource = rpt;
                     }
                     else
                     {
@@ -268,7 +268,7 @@ namespace IsabellaItems.Report
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show("" + ex, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
