@@ -401,7 +401,7 @@ namespace IsabellaItems
                 qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' and b.color='" + color + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.color='" + color + "' " +
                     "GROUP BY r.batch_id";
             }
             else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
@@ -409,7 +409,7 @@ namespace IsabellaItems
                 qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.article='" + article + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.article like '%" + article + "' " +
                     "GROUP BY r.batch_id";
             }
             else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
@@ -417,7 +417,7 @@ namespace IsabellaItems
                 qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and b.article='" + article + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and b.article like '%" + article + "' " +
                     "GROUP BY r.batch_id";
             }
             else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
@@ -491,7 +491,7 @@ namespace IsabellaItems
                     qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' " +
                     "GROUP BY r.batch_id";
                 }
                 else
@@ -509,7 +509,7 @@ namespace IsabellaItems
                     qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article='" + article + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' " +
                     "GROUP BY r.batch_id";
                 }
             }
@@ -553,7 +553,7 @@ namespace IsabellaItems
                     qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.article='" + article + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.article like '%" + article + "' " +
                     "GROUP BY r.batch_id";
                 }
                 else
@@ -571,7 +571,7 @@ namespace IsabellaItems
                     qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.article='" + article + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.article like '%" + article + "' " +
                     "GROUP BY r.batch_id";
                 }
             }
@@ -584,7 +584,7 @@ namespace IsabellaItems
                     qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' and b.size='" + size + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.size='" + size + "' " +
                     "GROUP BY r.batch_id";
                 }
                 else
@@ -602,7 +602,7 @@ namespace IsabellaItems
                     qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
                     "FROM received r " +
                     "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article='" + article + "' and b.size='" + size + "' " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and b.size='" + size + "' " +
                     "GROUP BY r.batch_id";
                 }
             }
