@@ -30,6 +30,7 @@ namespace IsabellaItems
             dataGridViewIssuedPlace.DataSource = getIssuedPlace();
 
             dataGridViewIssuedPlace.Columns[0].Visible = false;
+            progressBar.Visible = false;
 
             fillIssuedCmb();
             setProgress();
@@ -42,8 +43,6 @@ namespace IsabellaItems
 
             MySqlDataReader readerRcv = null;
             MySqlDataReader readerIss = null;
-            MySqlDataReader reader = null;
-            MySqlDataReader readerTwo = null;
 
             try
             {
@@ -81,50 +80,6 @@ namespace IsabellaItems
                 rcvLbl.Text = "" + received;
                 issLbl.Text = "" + issued;
                 balLbl.Text = "" + balance;
-
-                string day = DateTime.Now.DayOfWeek.ToString();
-
-                int noOfDay = getDayeNo(day);
-                int i = noOfDay;
-
-                DateTime date = DateTime.Today;
-
-                do
-                {
-                    int chartRcv = 0;
-                    int chartIss = 0;
-
-                    reader = DBConnection.getData("select IFNULL(SUM(receivedQty),0) AS received from received where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
-
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            chartRcv = reader.GetInt32("received");
-                        }
-
-                        reader.Close();
-
-                        readerTwo = DBConnection.getData("select IFNULL(SUM(issuedQty),0) AS issued from issued where date<=date('" + date.AddDays(-i).ToString("yyyy/M/d") + "')");
-
-                        while (readerTwo.Read())
-                        {
-                            chartIss = readerTwo.GetInt32("issued");
-                        }
-
-                        readerTwo.Close();
-                    }
-                    else
-                    {
-                        reader.Close();
-                    }
-
-                    chart.Series["Received"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv);
-                    chart.Series["Balance"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv - chartIss);
-                    
-                    i--;
-
-                } while (i >= 0);
             }
             catch (Exception)
             {
@@ -133,12 +88,6 @@ namespace IsabellaItems
 
                 if (readerIss != null)
                     readerIss.Close();
-
-                if (reader != null)
-                    reader.Close();
-
-                if (readerTwo != null)
-                    readerTwo.Close();
             }
         }
 
@@ -254,7 +203,7 @@ namespace IsabellaItems
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             int tracker = 0;
-
+            
             try
             {
                 string name = openFileDialog1.SafeFileName;
@@ -320,6 +269,8 @@ namespace IsabellaItems
 
                             Database.receive(rcv);
 
+                            setProgress();
+
                             x++;
                         }
                         catch (Exception exc)
@@ -327,7 +278,7 @@ namespace IsabellaItems
                             MessageBox.Show("Something wrong with the qty cell in excel file! " + tracker + "\n" + exc, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
-
+                    
                     itemDataGridView.DataSource = getItems();
                     setProgress();
                 }
