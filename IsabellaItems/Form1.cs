@@ -28,6 +28,9 @@ namespace IsabellaItems
         {
             itemDataGridView.DataSource = getItems();
             dataGridViewIssuedPlace.DataSource = getIssuedPlace();
+
+            dataGridViewIssuedPlace.Columns[0].Visible = false;
+
             fillIssuedCmb();
             setProgress();
         }
@@ -167,6 +170,9 @@ namespace IsabellaItems
                 
                 if (reader.HasRows)
                 {
+                    issuedCmb.Items.Clear();
+                    placeForMonthlyReport.Items.Clear();
+
                     issuedCmb.Items.Add("All");
                     placeForMonthlyReport.Items.Add("All");
 
@@ -735,7 +741,34 @@ namespace IsabellaItems
 
         private void button2_Click(object sender, EventArgs e)
         {
+            string newIssuedPlace = newIssuedPlaceTxtBox.Text;
 
+            if ((newIssuedPlace != null) && (!newIssuedPlace.Equals("")))
+            {
+                Place place = new Place(newIssuedPlace);
+
+                MySqlDataReader reader = DBConnection.getData("select * from place where place='" + newIssuedPlace + "'");
+
+                if (reader.HasRows)
+                {
+                    reader.Close();
+                    MessageBox.Show("This place already exists!", "Add place", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    reader.Close();
+                    Database.savePlace(place);
+                    
+                    dataGridViewIssuedPlace.DataSource = getIssuedPlace();
+                    fillIssuedCmb();
+
+                    newIssuedPlaceTxtBox.Text = "";
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter the new place name!", "Add place", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)

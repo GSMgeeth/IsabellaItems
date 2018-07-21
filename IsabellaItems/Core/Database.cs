@@ -147,5 +147,12 @@ namespace IsabellaItems.Core
                 return new Batch(batch_id, color, size, article);
             }
         }
+
+        public static void savePlace(Place place)
+        {
+            string placeName = place.GetPlace();
+
+            DBConnection.updateDB("insert into place (place) values ('" + placeName + "')");
+        }
     }
 }

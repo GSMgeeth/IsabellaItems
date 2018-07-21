@@ -70,7 +70,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.newIssuedPlaceTxtBox = new System.Windows.Forms.TextBox();
             this.dataGridViewIssuedPlace = new System.Windows.Forms.DataGridView();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1.SuspendLayout();
@@ -479,7 +479,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.label6);
             this.splitContainer1.Panel2.Controls.Add(this.button2);
-            this.splitContainer1.Panel2.Controls.Add(this.textBox2);
+            this.splitContainer1.Panel2.Controls.Add(this.newIssuedPlaceTxtBox);
             this.splitContainer1.Panel2.Controls.Add(this.dataGridViewIssuedPlace);
             this.splitContainer1.Size = new System.Drawing.Size(1167, 597);
             this.splitContainer1.SplitterDistance = 576;
@@ -506,12 +506,12 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // textBox2
+            // newIssuedPlaceTxtBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(13, 149);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(193, 22);
-            this.textBox2.TabIndex = 5;
+            this.newIssuedPlaceTxtBox.Location = new System.Drawing.Point(13, 149);
+            this.newIssuedPlaceTxtBox.Name = "newIssuedPlaceTxtBox";
+            this.newIssuedPlaceTxtBox.Size = new System.Drawing.Size(193, 22);
+            this.newIssuedPlaceTxtBox.TabIndex = 5;
             // 
             // dataGridViewIssuedPlace
             // 
@@ -590,7 +590,7 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox newIssuedPlaceTxtBox;
         private System.Windows.Forms.DataGridView dataGridViewIssuedPlace;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.TextBox searchColortxt;
