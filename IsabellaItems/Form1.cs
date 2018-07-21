@@ -247,6 +247,8 @@ namespace IsabellaItems
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
+            int tracker = 0;
+
             try
             {
                 string name = openFileDialog1.SafeFileName;
@@ -266,7 +268,18 @@ namespace IsabellaItems
 
                     while (ws.Cells[x, 1].Value2 != null)
                     {
-                        string article = ws.Cells[x, 1].Value2;
+                        string article;
+
+                        if (ws.Cells[x, 1].Value2 is double)
+                        {
+                            article = "" + (int)ws.Cells[x, 1].Value2;
+                        }
+                        else
+                        {
+                            article = ws.Cells[x, 1].Value2;
+                        }
+
+                        tracker++;
                         string color;
                         
                         if (ws.Cells[x, 2].Value2 is double)
@@ -278,7 +291,16 @@ namespace IsabellaItems
                             color = ws.Cells[x, 2].Value2;
                         }
                         
-                        string size = ws.Cells[x, 3].Value2;
+                        string size;
+
+                        if (ws.Cells[x, 3].Value2 is double)
+                        {
+                            size = "" + (int)ws.Cells[x, 3].Value2;
+                        }
+                        else
+                        {
+                            size = ws.Cells[x, 3].Value2;
+                        }
 
                         Batch batch = Database.getBatch(color, size, article);
 
@@ -296,7 +318,7 @@ namespace IsabellaItems
                         }
                         catch (Exception exc)
                         {
-                            MessageBox.Show("Something wrong with the qty cell in excel file!\n" + exc, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Something wrong with the qty cell in excel file! " + tracker + "\n" + exc, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
 
@@ -306,7 +328,7 @@ namespace IsabellaItems
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Something wrong with the excel file!\n" + exception, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Something wrong with the excel file! " + tracker + "\n" + exception, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
