@@ -16,11 +16,21 @@ namespace IsabellaItems.Report
     public partial class ReportForm : Form
     {
         string qry = "";
+        string qryRec = "";
         int type;
 
         public ReportForm(string qry, int type)
         {
             this.qry = qry;
+            this.type = type;
+
+            InitializeComponent();
+        }
+
+        public ReportForm(string qry, string qryRec, int type)
+        {
+            this.qry = qry;
+            this.qryRec = qryRec;
             this.type = type;
 
             InitializeComponent();
@@ -69,7 +79,7 @@ namespace IsabellaItems.Report
                         Report.CrystalReportIssued rpt = new Report.CrystalReportIssued();
 
                         rpt.Database.Tables["Item"].SetDataSource(table);
-                        
+
                         ExportOptions exportOptions;
                         DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
 
@@ -91,7 +101,7 @@ namespace IsabellaItems.Report
                         }
 
                         rpt.Export();
-                        
+
                         ItemsCrystalReportViewer.ReportSource = null;
                         ItemsCrystalReportViewer.ReportSource = rpt;
                     }
@@ -150,7 +160,7 @@ namespace IsabellaItems.Report
                         Report.CrystalReportOfItems rpt = new Report.CrystalReportOfItems();
 
                         rpt.Database.Tables["Item"].SetDataSource(table);
-                        
+
                         ExportOptions exportOptions;
                         DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
 
@@ -172,7 +182,7 @@ namespace IsabellaItems.Report
                         }
 
                         rpt.Export();
-                        
+
                         ItemsCrystalReportViewer.ReportSource = null;
                         ItemsCrystalReportViewer.ReportSource = rpt;
                     }
@@ -233,7 +243,7 @@ namespace IsabellaItems.Report
                         Report.CrystalReportSummary rpt = new Report.CrystalReportSummary();
 
                         rpt.Database.Tables["Summary"].SetDataSource(table);
-                        
+
                         ExportOptions exportOptions;
                         DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
 
@@ -255,7 +265,7 @@ namespace IsabellaItems.Report
                         }
 
                         rpt.Export();
-                        
+
                         ItemsCrystalReportViewer.ReportSource = null;
                         ItemsCrystalReportViewer.ReportSource = rpt;
                     }
@@ -268,6 +278,122 @@ namespace IsabellaItems.Report
                 }
                 catch (Exception ex)
                 {
+                    MessageBox.Show("" + ex, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else if (type == 3)
+            {
+                DataTable table = new DataTable();
+                DataTable tableRec = new DataTable();
+
+                MySqlDataReader reader = null;
+
+                tableRec.Columns.Add("Received", typeof(uint));
+                table.Columns.Add("Place", typeof(string));
+                table.Columns.Add("issued", typeof(uint));
+
+                try
+                {
+                    reader = DBConnection.getData(qry);
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            /*
+                            Object o;
+
+                            try
+                            {
+                                o = reader.GetString("issued");
+                            }
+                            catch (Exception)
+                            {
+                                o = null;
+                            }
+                            
+                            if (o != null)
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("issued"));
+                            else
+                                table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), 0);
+                            */
+
+                            table.Rows.Add(reader.GetString("place"), reader.GetUInt32("issued"));
+                        }
+
+                        reader.Close();
+
+                        reader = DBConnection.getData(qryRec);
+
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                /*
+                                Object o;
+
+                                try
+                                {
+                                    o = reader.GetString("issued");
+                                }
+                                catch (Exception)
+                                {
+                                    o = null;
+                                }
+
+                                if (o != null)
+                                    table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), reader.GetInt32("issued"));
+                                else
+                                    table.Rows.Add(reader.GetString("color"), reader.GetString("size"), reader.GetString("article"), 0);
+                                */
+
+                                tableRec.Rows.Add(reader.GetUInt32("received"));
+                            }
+
+                            reader.Close();
+
+                            Report.CrystalReportAdvancedSummary rpt = new Report.CrystalReportAdvancedSummary();
+
+                            rpt.Database.Tables["AdvancedSummary"].SetDataSource(table);
+                            rpt.Database.Tables["AdvancedSummaryReceived"].SetDataSource(tableRec);
+
+                            ExportOptions exportOptions;
+                            DiskFileDestinationOptions diskFileDestinationOptions = new DiskFileDestinationOptions();
+
+                            SaveFileDialog sfd = new SaveFileDialog();
+
+                            sfd.Filter = "Pdf Files|*.pdf";
+
+                            if (sfd.ShowDialog() == DialogResult.OK)
+                            {
+                                diskFileDestinationOptions.DiskFileName = sfd.FileName;
+                            }
+
+                            exportOptions = rpt.ExportOptions;
+                            {
+                                exportOptions.ExportDestinationType = ExportDestinationType.DiskFile;
+                                exportOptions.ExportFormatType = ExportFormatType.PortableDocFormat;
+                                exportOptions.DestinationOptions = diskFileDestinationOptions;
+                                exportOptions.ExportFormatOptions = new PdfRtfWordFormatOptions();
+                            }
+
+                            rpt.Export();
+
+                            ItemsCrystalReportViewer.ReportSource = null;
+                            ItemsCrystalReportViewer.ReportSource = rpt;
+                        }
+                        else
+                        {
+                            reader.Close();
+
+                            MessageBox.Show("No records!", "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    reader.Close();
+
                     MessageBox.Show("" + ex, "Items picker", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }

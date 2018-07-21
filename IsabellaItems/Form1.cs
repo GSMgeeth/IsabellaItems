@@ -734,7 +734,17 @@ namespace IsabellaItems
                 "join (select SUM(issuedQty) as issuedQty from issued where place_id=1) ip " +
                 "join (select SUM(issuedQty) as issuedQty from issued where place_id=2) ih;";
 
-            ReportForm rptFrm = new ReportForm(qry, 2);
+            string qryTmp = "SELECT COUNT(i.item_id) as itemQty, t.place as place FROM issued b " +
+                            "LEFT JOIN place t ON b.place_id=t.place_id " +
+                            "INNER JOIN item i on b.bag_id=i.bag_id " +
+                            "WHERE issued=1 " +
+                            "GROUP BY b.place_id;";
+            string qryRec = "select SUM(receivedQty) as received from received;";
+
+            string qryIss = "select p.place, IFNULL(SUM(i.issuedQty), 0) as issued" +
+                          " from place p left join issued i on p.place_id=i.place_id group by i.place_id";
+
+            ReportForm rptFrm = new ReportForm(qryIss, qryRec, 3);
 
             rptFrm.Show();
         }

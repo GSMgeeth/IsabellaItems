@@ -120,6 +120,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report\CrystalReportAdvancedSummary.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CrystalReportAdvancedSummary.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Report\CrystalReportIssued.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -142,6 +148,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Report\DataSetAdvancedSummary.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataSetAdvancedSummary.xsd</DependentUpon>
     </Compile>
     <Compile Include="Report\DataSetSummary.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -176,6 +187,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Report\CrystalReportAdvancedSummary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CrystalReportAdvancedSummary.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Report\CrystalReportIssued.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CrystalReportIssued.cs</LastGenOutput>
@@ -212,6 +227,17 @@
     </None>
     <None Include="Report\DataSet.xss">
       <DependentUpon>DataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Report\DataSetAdvancedSummary.xsc">
+      <DependentUpon>DataSetAdvancedSummary.xsd</DependentUpon>
+    </None>
+    <None Include="Report\DataSetAdvancedSummary.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSetAdvancedSummary.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Report\DataSetAdvancedSummary.xss">
+      <DependentUpon>DataSetAdvancedSummary.xsd</DependentUpon>
     </None>
     <None Include="Report\DataSetSummary.xsc">
       <DependentUpon>DataSetSummary.xsd</DependentUpon>

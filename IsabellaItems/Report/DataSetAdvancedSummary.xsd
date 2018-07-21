@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSetAdvancedSummary" targetNamespace="http://tempuri.org/DataSetAdvancedSummary.xsd" xmlns:mstns="http://tempuri.org/DataSetAdvancedSummary.xsd" xmlns="http://tempuri.org/DataSetAdvancedSummary.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSetAdvancedSummary" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSetAdvancedSummary" msprop:Generator_UserDSName="DataSetAdvancedSummary">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="AdvancedSummary" msprop:Generator_TableClassName="AdvancedSummaryDataTable" msprop:Generator_TableVarName="tableAdvancedSummary" msprop:Generator_RowChangedName="AdvancedSummaryRowChanged" msprop:Generator_TablePropName="AdvancedSummary" msprop:Generator_RowDeletingName="AdvancedSummaryRowDeleting" msprop:Generator_RowChangingName="AdvancedSummaryRowChanging" msprop:Generator_RowEvHandlerName="AdvancedSummaryRowChangeEventHandler" msprop:Generator_RowDeletedName="AdvancedSummaryRowDeleted" msprop:Generator_RowClassName="AdvancedSummaryRow" msprop:Generator_UserTableName="AdvancedSummary" msprop:Generator_RowEvArgName="AdvancedSummaryRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Place" msprop:Generator_ColumnVarNameInTable="columnPlace" msprop:Generator_ColumnPropNameInRow="Place" msprop:Generator_ColumnPropNameInTable="PlaceColumn" msprop:Generator_UserColumnName="Place" type="xs:string" minOccurs="0" />
+              <xs:element name="Issued" msprop:Generator_ColumnVarNameInTable="columnIssued" msprop:Generator_ColumnPropNameInRow="Issued" msprop:Generator_ColumnPropNameInTable="IssuedColumn" msprop:Generator_UserColumnName="Issued" type="xs:unsignedInt" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="AdvancedSummaryReceived" msprop:Generator_TableClassName="AdvancedSummaryReceivedDataTable" msprop:Generator_TableVarName="tableAdvancedSummaryReceived" msprop:Generator_TablePropName="AdvancedSummaryReceived" msprop:Generator_RowDeletingName="AdvancedSummaryReceivedRowDeleting" msprop:Generator_RowChangingName="AdvancedSummaryReceivedRowChanging" msprop:Generator_RowEvHandlerName="AdvancedSummaryReceivedRowChangeEventHandler" msprop:Generator_RowDeletedName="AdvancedSummaryReceivedRowDeleted" msprop:Generator_UserTableName="AdvancedSummaryReceived" msprop:Generator_RowChangedName="AdvancedSummaryReceivedRowChanged" msprop:Generator_RowEvArgName="AdvancedSummaryReceivedRowChangeEvent" msprop:Generator_RowClassName="AdvancedSummaryReceivedRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Received" msprop:Generator_ColumnVarNameInTable="columnReceived" msprop:Generator_ColumnPropNameInRow="Received" msprop:Generator_ColumnPropNameInTable="ReceivedColumn" msprop:Generator_UserColumnName="Received" type="xs:unsignedInt" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
