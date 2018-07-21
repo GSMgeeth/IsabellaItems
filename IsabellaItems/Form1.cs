@@ -121,7 +121,7 @@ namespace IsabellaItems
 
                     chart.Series["Received"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv);
                     chart.Series["Balance"].Points.AddXY(date.AddDays(-i).DayOfWeek.ToString(), chartRcv - chartIss);
-
+                    
                     i--;
 
                 } while (i >= 0);
