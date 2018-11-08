@@ -75,9 +75,9 @@ namespace IsabellaItems
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                MessageBox.Show("Please check quantity value!", "Issue", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please check quantity value!\n" + exc, "Issue", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

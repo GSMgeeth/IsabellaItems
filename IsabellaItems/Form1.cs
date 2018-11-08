@@ -28,11 +28,12 @@ namespace IsabellaItems
         {
             itemDataGridView.DataSource = getItems();
             dataGridViewIssuedPlace.DataSource = getIssuedPlace();
+            dataGridViewInPlace.DataSource = getInPlace();
 
             dataGridViewIssuedPlace.Columns[0].Visible = false;
-            progressBar.Visible = false;
 
             fillIssuedCmb();
+            fillInCmb();
             setProgress();
         }
 
@@ -140,6 +141,35 @@ namespace IsabellaItems
             }
         }
 
+        private void fillInCmb()
+        {
+            try
+            {
+                MySqlDataReader reader = DBConnection.getData("select * from in_place");
+
+                if (reader.HasRows)
+                {
+                    inCmb.Items.Clear();
+                    //placeForMonthlyReport.Items.Clear();
+
+                    inCmb.Items.Add("All");
+                    //placeForMonthlyReport.Items.Add("All");
+
+                    while (reader.Read())
+                    {
+                        inCmb.Items.Add(reader.GetString("in_place_name"));
+                        //placeForMonthlyReport.Items.Add(reader.GetString("place"));
+                    }
+                }
+
+                reader.Close();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         private System.Data.DataTable getIssuedPlace()
         {
             System.Data.DataTable table = new System.Data.DataTable();
@@ -164,7 +194,32 @@ namespace IsabellaItems
 
             return table;
         }
-        
+
+        private System.Data.DataTable getInPlace()
+        {
+            System.Data.DataTable table = new System.Data.DataTable();
+
+            try
+            {
+                MySqlDataReader reader = DBConnection.getData("select * from in_place");
+
+                if (reader.HasRows)
+                {
+                    table.Load(reader);
+                }
+                else
+                {
+                    reader.Close();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return table;
+        }
+
         private System.Data.DataTable getItems()
         {
             System.Data.DataTable table = new System.Data.DataTable();
@@ -292,12 +347,7 @@ namespace IsabellaItems
         private void searchBtn_Click(object sender, EventArgs e)
         {
             string place = "Pallekale";
-            //DateTime date = datePicker.Value;
-            string qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                "FROM received r " +
-                "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                "INNER JOIN batch b on r.batch_id=b.batch_id " +
-                "GROUP BY r.batch_id";
+            string qry = "";
 
             Object tmpPlaceObj = issuedCmb.SelectedItem;
             string color = searchColortxt.Text;
@@ -1083,6 +1133,38 @@ namespace IsabellaItems
             catch (Exception exc)
             {
                 MessageBox.Show("Invalid data!\n" + exc.StackTrace, "Items finder", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string newInPlace = newInPlaceTxtBox.Text;
+
+            if ((newInPlace != null) && (!newInPlace.Equals("")))
+            {
+                Place place = new Place(newInPlace);
+
+                MySqlDataReader reader = DBConnection.getData("select * from in_place where in_place_name='" + newInPlace + "'");
+
+                if (reader.HasRows)
+                {
+                    reader.Close();
+                    MessageBox.Show("This place already exists!", "Add In place", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    reader.Close();
+                    Database.saveInPlace(place);
+
+                    dataGridViewInPlace.DataSource = getInPlace();
+                    fillInCmb();
+
+                    newInPlaceTxtBox.Text = "";
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter the new place name!", "Add In place", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

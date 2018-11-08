@@ -22,7 +22,7 @@ namespace IsabellaItems.Core
             {
                 while (reader.Read())
                 {
-                    batch_id = reader.GetInt32("batch_id");
+                    batch_id = reader.GetInt32(0);
                 }
 
                 reader.Close();
@@ -31,12 +31,34 @@ namespace IsabellaItems.Core
 
                 while (readerPlace.Read())
                 {
-                    place_id = readerPlace.GetInt32("place_id");
+                    place_id = readerPlace.GetInt32(0);
                 }
 
                 readerPlace.Close();
 
-                DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id);
+
+                if (reader.HasRows)
+                {
+                    int currentQty = 0;
+
+                    while (reader.Read())
+                    {
+                        currentQty = reader.GetInt32("issuedQty");
+                    }
+
+                    int newQty = currentQty + qty;
+
+                    reader.Close();
+
+                    DBConnection.updateDB("update issued set issuedQty=" + newQty + ", date='" + DateTime.Now.ToString("yyyy/M/d") + "' where place_id=" + place_id + " and batch_id=" + batch_id);
+                }
+                else
+                {
+                    reader.Close();
+
+                    DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                }
             }
         }
 
@@ -72,8 +94,30 @@ namespace IsabellaItems.Core
                     }
 
                     readerPlace.Close();
+                    
+                    reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id);
 
-                    DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                    if (reader.HasRows)
+                    {
+                        int currentQty = 0;
+
+                        while (reader.Read())
+                        {
+                            currentQty = reader.GetInt32("issuedQty");
+                        }
+
+                        int newQty = currentQty + qty;
+
+                        reader.Close();
+
+                        DBConnection.updateDB("update issued set issuedQty=" + newQty + ", date='" + DateTime.Now.ToString("yyyy/M/d") + "' where place_id=" + place_id + " and batch_id=" + batch_id);
+                    }
+                    else
+                    {
+                        reader.Close();
+
+                        DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                    }
                 }
             }
         }
@@ -153,6 +197,13 @@ namespace IsabellaItems.Core
             string placeName = place.GetPlace();
 
             DBConnection.updateDB("insert into place (place) values ('" + placeName + "')");
+        }
+
+        public static void saveInPlace(Place place)
+        {
+            string placeName = place.GetPlace();
+
+            DBConnection.updateDB("insert into in_place (in_place_name) values ('" + placeName + "')");
         }
     }
 }
