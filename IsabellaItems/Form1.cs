@@ -31,6 +31,7 @@ namespace IsabellaItems
             dataGridViewInPlace.DataSource = getInPlace();
 
             dataGridViewIssuedPlace.Columns[0].Visible = false;
+            dataGridViewInPlace.Columns[0].Visible = false;
 
             fillIssuedCmb();
             fillInCmb();
