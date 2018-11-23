@@ -26,9 +26,7 @@ namespace IsabellaItems.Role
             this.place_id = place_id;
             this.place = place;
         }
-
-        public int Place_id { get => place_id; set => place_id = value; }
-
+        
         public string GetPlace()
         {
             return place;

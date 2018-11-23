@@ -36,7 +36,7 @@ namespace IsabellaItems.Core
 
                 readerPlace.Close();
 
-                reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id);
+                reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
 
                 if (reader.HasRows)
                 {
@@ -51,7 +51,7 @@ namespace IsabellaItems.Core
 
                     reader.Close();
 
-                    DBConnection.updateDB("update issued set issuedQty=" + newQty + ", date='" + DateTime.Now.ToString("yyyy/M/d") + "' where place_id=" + place_id + " and batch_id=" + batch_id);
+                    DBConnection.updateDB("update issued set issuedQty=" + newQty + " where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
                 }
                 else
                 {
@@ -60,6 +60,87 @@ namespace IsabellaItems.Core
                     DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
                 }
             }
+        }
+
+        public static int issueFromExcel(string place, string color, string size, string article, int qty)
+        {
+            int batch_id = 1;
+            int place_id = 1;
+            int stat = 0;
+
+            MySqlDataReader reader = DBConnection.getData("select batch_id from batch where color='" + color + "' and size='" + size + "' and article='" + article + "'");
+
+            if (reader.HasRows)
+            {
+                if (reader.Read())
+                {
+                    batch_id = reader.GetInt32(0);
+                }
+
+                reader.Close();
+
+                MySqlDataReader readerPlace = DBConnection.getData("select place_id from place where place='" + place + "'");
+
+                if (readerPlace.Read())
+                {
+                    place_id = readerPlace.GetInt32(0);
+
+                    readerPlace.Close();
+                    
+                    MySqlDataReader readerCheck = DBConnection.getData("SELECT IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued " +
+                                                                       "WHERE batch_id=" + batch_id + " GROUP BY batch_id) i on i.batch_id=r.batch_id GROUP BY r.batch_id;");
+
+                    if (readerCheck.HasRows)
+                    {
+                        while (readerCheck.Read())
+                        {
+                            if (readerCheck.GetInt32("balance") > 0)
+                            {
+                                reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
+
+                                if (reader.HasRows)
+                                {
+                                    int currentQty = 0;
+
+                                    while (reader.Read())
+                                    {
+                                        currentQty = reader.GetInt32("issuedQty");
+                                    }
+
+                                    int newQty = currentQty + qty;
+
+                                    reader.Close();
+
+                                    DBConnection.updateDB("update issued set issuedQty=" + newQty + " where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
+                                }
+                                else
+                                {
+                                    reader.Close();
+
+                                    DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                                }
+                            }
+                            else
+                            {
+                                readerCheck.Close();
+                                stat = 3;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    readerPlace.Close();
+                    stat = 2;
+                }
+            }
+            else
+            {
+                reader.Close();
+                stat = 1;
+            }
+
+            return stat;
         }
 
         public static void issueAll(Role.Issued [] issued)
@@ -95,7 +176,7 @@ namespace IsabellaItems.Core
 
                     readerPlace.Close();
                     
-                    reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id);
+                    reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
 
                     if (reader.HasRows)
                     {
@@ -110,7 +191,7 @@ namespace IsabellaItems.Core
 
                         reader.Close();
 
-                        DBConnection.updateDB("update issued set issuedQty=" + newQty + ", date='" + DateTime.Now.ToString("yyyy/M/d") + "' where place_id=" + place_id + " and batch_id=" + batch_id);
+                        DBConnection.updateDB("update issued set issuedQty=" + newQty + " where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
                     }
                     else
                     {
@@ -126,28 +207,43 @@ namespace IsabellaItems.Core
         {
             try
             {
-                MySqlDataReader reader = DBConnection.getData("select * from received where batch_id=" + rcv.Batch.Batch_id + " and date='" + rcv.Date.ToString("yyyy/M/d") + "'");
+                int place_id = 0;
 
-                if (reader.HasRows)
+                MySqlDataReader readerPlace = DBConnection.getData("select in_place_id from in_place where in_place_name='" + rcv.Place.GetPlace() + "'");
+
+                if (readerPlace.Read())
                 {
-                    int currentQty = 0;
+                    place_id = readerPlace.GetInt32(0);
 
-                    while (reader.Read())
+                    readerPlace.Close();
+
+                    MySqlDataReader reader = DBConnection.getData("select * from received where batch_id=" + rcv.Batch.Batch_id + " and in_place_id=" + place_id + " and date='" + rcv.Date.ToString("yyyy/M/d") + "'");
+
+                    if (reader.HasRows)
                     {
-                        currentQty = reader.GetInt32("receivedQty");
+                        int currentQty = 0;
+
+                        while (reader.Read())
+                        {
+                            currentQty = reader.GetInt32("receivedQty");
+                        }
+
+                        reader.Close();
+
+                        int totalQty = currentQty + rcv.ReceivedQty;
+
+                        DBConnection.updateDB("update received set receivedQty=" + totalQty + " where batch_id=" + rcv.Batch.Batch_id + " and in_place_id=" + place_id + " and date='" + rcv.Date.ToString("yyyy/M/d") + "'");
                     }
-                    
-                    reader.Close();
+                    else
+                    {
+                        reader.Close();
 
-                    int totalQty = currentQty + rcv.ReceivedQty;
-
-                    DBConnection.updateDB("update received set receivedQty=" + totalQty + " where batch_id=" + rcv.Batch.Batch_id + " and date='" + rcv.Date.ToString("yyyy/M/d") + "'");
+                        DBConnection.updateDB("insert into received (batch_id, in_place_id, date, receivedQty) values (" + rcv.Batch.Batch_id + ", " + place_id + ", '" + rcv.Date.ToString("yyyy/M/d") + "', " + rcv.ReceivedQty + ")");
+                    }
                 }
                 else
                 {
-                    reader.Close();
-
-                    DBConnection.updateDB("insert into received (batch_id, date, receivedQty) values (" + rcv.Batch.Batch_id + ", '" + rcv.Date.ToString("yyyy/M/d") + "', " + rcv.ReceivedQty + ")");
+                    MessageBox.Show("In Place doesn't exist!", "DB Uploader", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception exc)

@@ -228,10 +228,7 @@ namespace IsabellaItems
             try
             {
                 MySqlDataReader reader = DBConnection.getData("SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                "FROM received r " +
-                "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                "INNER JOIN batch b on r.batch_id=b.batch_id " +
-                "GROUP BY r.batch_id;");
+                "FROM received r LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id GROUP BY r.batch_id;");
 
                 if (reader.HasRows)
                 {
@@ -258,7 +255,7 @@ namespace IsabellaItems
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            int tracker = 0;
+            int tracker = 1;
             
             try
             {
@@ -277,366 +274,1007 @@ namespace IsabellaItems
 
                     int x = 2;
 
-                    while (ws.Cells[x, 1].Value2 != null)
+                    Place inPlace = new Place();
+                    string article, size, color;
+                    double qty = 0;
+
+                    if (ws.Cells[2, 6].Value2 == null)
                     {
-                        string article;
+                        MessageBox.Show("First row of the excell sheet must have a in place!", "File Reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        while (ws.Cells[x, 1].Value2 != null)
+                        {
+                            tracker++;
 
-                        if (ws.Cells[x, 1].Value2 is double)
-                        {
-                            article = "" + (int)ws.Cells[x, 1].Value2;
-                        }
-                        else
-                        {
-                            article = ws.Cells[x, 1].Value2;
-                        }
+                            if (ws.Cells[x, 1].Value2 is double)
+                            {
+                                article = "" + (int)ws.Cells[x, 1].Value2;
+                            }
+                            else
+                            {
+                                article = ws.Cells[x, 1].Value2;
+                            }
 
-                        tracker++;
-                        string color;
-                        
-                        if (ws.Cells[x, 2].Value2 is double)
-                        {
-                            color = "" + (int)ws.Cells[x, 2].Value2;
-                        }
-                        else
-                        {
-                            color = ws.Cells[x, 2].Value2;
-                        }
-                        
-                        string size;
+                            if (ws.Cells[x, 2].Value2 is double)
+                            {
+                                color = "" + (int)ws.Cells[x, 2].Value2;
+                            }
+                            else
+                            {
+                                color = ws.Cells[x, 2].Value2;
+                            }
 
-                        if (ws.Cells[x, 3].Value2 is double)
-                        {
-                            size = "" + (int)ws.Cells[x, 3].Value2;
-                        }
-                        else
-                        {
-                            size = ws.Cells[x, 3].Value2;
-                        }
+                            if (ws.Cells[x, 3].Value2 is double)
+                            {
+                                size = "" + (int)ws.Cells[x, 3].Value2;
+                            }
+                            else
+                            {
+                                size = ws.Cells[x, 3].Value2;
+                            }
 
-                        Batch batch = Database.getBatch(color, size, article);
+                            Batch batch = Database.getBatch(color, size, article);
 
-                        double qty = 0;
-
-                        try
-                        {
                             qty = ws.Cells[x, 5].Value2;
 
-                            Received rcv = new Received(batch, DateTime.Now, (int)qty);
+                            if (ws.Cells[x, 6].Value2 != null)
+                            {
+                                if (ws.Cells[x, 6].Value2 is double)
+                                    inPlace.SetPlace("" + (int)ws.Cells[x, 6].Value2);
+                                else
+                                    inPlace.SetPlace(ws.Cells[x, 6].Value2);
+                            }
 
-                            Database.receive(rcv);
+                            try
+                            {
+                                Received rcv = new Received(DateTime.Now, (int)qty, batch, inPlace);
 
-                            setProgress();
+                                Database.receive(rcv);
 
-                            x++;
+                                setProgress();
+
+                                x++;
+                            }
+                            catch (Exception exc)
+                            {
+                                MessageBox.Show("Something wrong with the qty cell in excel file line no " + tracker + "!\n" + exc, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
-                        catch (Exception exc)
-                        {
-                            MessageBox.Show("Something wrong with the qty cell in excel file! " + tracker + "\n" + exc, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+
+                        itemDataGridView.DataSource = getItems();
+                        setProgress();
                     }
-                    
-                    itemDataGridView.DataSource = getItems();
-                    setProgress();
                 }
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Something wrong with the excel file! " + tracker + "\n" + exception, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Something wrong with the excel file line no " + tracker + "!\n" + exception, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void searchBtn_Click(object sender, EventArgs e)
         {
             string place = "Pallekale";
+            string inPlace = "";
             string qry = "";
 
             Object tmpPlaceObj = issuedCmb.SelectedItem;
+            Object tmpInPlaceObj = inCmb.SelectedItem;
             string color = searchColortxt.Text;
             string size = searchSizeTxt.Text;
             string article = searchArticleTxt.Text;
 
-            if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+            if (tmpInPlaceObj == null)
             {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                "FROM received r " +
-                "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                "INNER JOIN batch b on r.batch_id=b.batch_id " +
-                "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
-            {
-                place = issuedCmb.SelectedItem.ToString();
+                button3.Visible = false;
 
-                if (place.Equals("All"))
+                if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued " +
+                        "FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id WHERE i.place_id=" + place_id + " GROUP BY r.batch_id";
+                    }
+                }
+                else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
                 {
                     qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id " +
-                    "GROUP BY r.batch_id";
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' " +
+                        "GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.color='" + color + "' " +
+                        "GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.article like '%" + article + "' " +
+                        "GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and b.article like '%" + article + "' " +
+                        "GROUP BY r.batch_id";
+                }
+                else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                }
+                else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.size='" + size + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                }
+                else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                }
+                else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.size='" + size + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.size='" + size + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                }
+                else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.article like '%" + article + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.article like '%" + article + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                }
+                else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.size='" + size + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and b.size='" + size + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                }
+                else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                {
+                    place = issuedCmb.SelectedItem.ToString();
+
+                    if (place.Equals("All"))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                    else
+                    {
+                        int place_id = 1;
+                        MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                        while (reader.Read())
+                        {
+                            place_id = reader.GetInt32("place_id");
+                        }
+
+                        reader.Close();
+
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                        "FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                        "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' " +
+                        "GROUP BY r.batch_id";
+                    }
+                }
+            }
+            else
+            {
+                inPlace = inCmb.SelectedItem.ToString();
+
+                if (inPlace.Equals("All"))
+                {
+                    if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued " +
+                            "FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id WHERE i.place_id=" + place_id + " GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' " +
+                            "GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.color='" + color + "' " +
+                            "GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.article like '%" + article + "' " +
+                            "GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and b.article like '%" + article + "' " +
+                            "GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.size='" + size + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.size='" + size + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.size='" + size + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.article like '%" + article + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.article like '%" + article + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.size='" + size + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and b.size='" + size + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
                 }
                 else
                 {
-                    int place_id = 1;
-                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+                    int in_place_id = 1;
+                    MySqlDataReader readerIn = DBConnection.getData("select * from in_place where in_place_name='" + inPlace + "'");
 
-                    while (reader.Read())
+                    while (readerIn.Read())
                     {
-                        place_id = reader.GetInt32("place_id");
+                        in_place_id = readerIn.GetInt32("in_place_id");
                     }
 
-                    reader.Close();
+                    readerIn.Close();
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " " +
-                    "GROUP BY r.batch_id";
-                }
-            }
-            else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
-            {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' " +
-                    "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
-            {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' " +
-                    "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
-            {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' " +
-                    "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
-            {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' " +
-                    "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
-            {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.color='" + color + "' " +
-                    "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
-            {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.article like '%" + article + "' " +
-                    "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
-            {
-                qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and b.article like '%" + article + "' " +
-                    "GROUP BY r.batch_id";
-            }
-            else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
-            {
-                place = issuedCmb.SelectedItem.ToString();
-
-                if (place.Equals("All"))
-                {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' " +
-                    "GROUP BY r.batch_id";
-                }
-                else
-                {
-                    int place_id = 1;
-                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
-
-                    while (reader.Read())
+                    if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
                     {
-                        place_id = reader.GetInt32("place_id");
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r " +
+                        "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id WHERE r.in_place_id=" + in_place_id + " GROUP BY r.batch_id";
                     }
-
-                    reader.Close();
-
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' " +
-                    "GROUP BY r.batch_id";
-                }
-            }
-            else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
-            {
-                place = issuedCmb.SelectedItem.ToString();
-
-                if (place.Equals("All"))
-                {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' " +
-                    "GROUP BY r.batch_id";
-                }
-                else
-                {
-                    int place_id = 1;
-                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
-
-                    while (reader.Read())
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (article.Equals("")))
                     {
-                        place_id = reader.GetInt32("place_id");
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id WHERE r.in_place_id=" + in_place_id + " GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued " +
+                            "FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id WHERE i.place_id=" + place_id + " and r.in_place_id=" + in_place_id + " GROUP BY r.batch_id";
+                        }
                     }
-
-                    reader.Close();
-
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.size='" + size + "' " +
-                    "GROUP BY r.batch_id";
-                }
-            }
-            else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
-            {
-                place = issuedCmb.SelectedItem.ToString();
-
-                if (place.Equals("All"))
-                {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' " +
-                    "GROUP BY r.batch_id";
-                }
-                else
-                {
-                    int place_id = 1;
-                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
-
-                    while (reader.Read())
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
                     {
-                        place_id = reader.GetInt32("place_id");
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and r.in_place_id=" + in_place_id + " GROUP BY r.batch_id";
                     }
-
-                    reader.Close();
-
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' " +
-                    "GROUP BY r.batch_id";
-                }
-            }
-            else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
-            {
-                place = issuedCmb.SelectedItem.ToString();
-
-                if (place.Equals("All"))
-                {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.size='" + size + "' " +
-                    "GROUP BY r.batch_id";
-                }
-                else
-                {
-                    int place_id = 1;
-                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
-
-                    while (reader.Read())
+                    else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
                     {
-                        place_id = reader.GetInt32("place_id");
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and r.in_place_id=" + in_place_id + " GROUP BY r.batch_id";
                     }
-
-                    reader.Close();
-
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.size='" + size + "' " +
-                    "GROUP BY r.batch_id";
-                }
-            }
-            else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
-            {
-                place = issuedCmb.SelectedItem.ToString();
-
-                if (place.Equals("All"))
-                {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.article like '%" + article + "' " +
-                    "GROUP BY r.batch_id";
-                }
-                else
-                {
-                    int place_id = 1;
-                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
-
-                    while (reader.Read())
+                    else if ((tmpPlaceObj == null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
                     {
-                        place_id = reader.GetInt32("place_id");
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id INNER JOIN batch b on r.batch_id=b.batch_id where b.article='" + article + "' and r.in_place_id=" + in_place_id + " GROUP BY r.batch_id";
                     }
-
-                    reader.Close();
-
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.article like '%" + article + "' " +
-                    "GROUP BY r.batch_id";
-                }
-            }
-            else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
-            {
-                place = issuedCmb.SelectedItem.ToString();
-
-                if (place.Equals("All"))
-                {
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.size='" + size + "' " +
-                    "GROUP BY r.batch_id";
-                }
-                else
-                {
-                    int place_id = 1;
-                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
-
-                    while (reader.Read())
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
                     {
-                        place_id = reader.GetInt32("place_id");
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
                     }
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.color='" + color + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.article like '%" + article + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj == null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and b.article like '%" + article + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
 
-                    reader.Close();
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and r.in_place_id=" + in_place_id + " r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
 
-                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
-                    "FROM received r " +
-                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and b.size='" + size + "' " +
-                    "GROUP BY r.batch_id";
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.size='" + size + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.size='" + size + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.size='" + size + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.color='" + color + "' and b.article like '%" + article + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.color='" + color + "' and b.article like '%" + article + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article like '%" + article + "' and b.size='" + size + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article like '%" + article + "' and b.size='" + size + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
+                    else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+                    {
+                        place = issuedCmb.SelectedItem.ToString();
+
+                        if (place.Equals("All"))
+                        {
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where b.article LIKE '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                        else
+                        {
+                            int place_id = 1;
+                            MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                            while (reader.Read())
+                            {
+                                place_id = reader.GetInt32("place_id");
+                            }
+
+                            reader.Close();
+
+                            qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                            "FROM received r " +
+                            "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                            "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article LIKE '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' and r.in_place_id=" + in_place_id + " " +
+                            "GROUP BY r.batch_id";
+                        }
+                    }
                 }
             }
-
+            
             try
             {
                 MySqlDataReader reader = DBConnection.getData(qry);
@@ -664,9 +1302,13 @@ namespace IsabellaItems
         private void showAllBtn_Click(object sender, EventArgs e)
         {
             issuedCmb.SelectedIndex = -1;
+            inCmb.SelectedItem = null;
             searchColortxt.Clear();
             searchSizeTxt.Clear();
             searchArticleTxt.Clear();
+
+            button3.Visible = true;
+
             itemDataGridView.DataSource = getItems();
         }
 
@@ -716,17 +1358,33 @@ namespace IsabellaItems
 
         private void itemDataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            string color = itemDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
-            string size = itemDataGridView.Rows[e.RowIndex].Cells[1].Value.ToString();
-            string article = itemDataGridView.Rows[e.RowIndex].Cells[2].Value.ToString();
-            string balance = itemDataGridView.Rows[e.RowIndex].Cells[5].Value.ToString();
+            Object tmpInPlaceObj = inCmb.SelectedItem;
 
-            IssueForm frm = new IssueForm(color, size, article, Int32.Parse(balance));
+            if (tmpInPlaceObj == null)
+            {
+                try
+                {
+                    string color = itemDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    string size = itemDataGridView.Rows[e.RowIndex].Cells[1].Value.ToString();
+                    string article = itemDataGridView.Rows[e.RowIndex].Cells[2].Value.ToString();
+                    string balance = itemDataGridView.Rows[e.RowIndex].Cells[5].Value.ToString();
 
-            frm.ShowDialog(this);
+                    IssueWithInPlaceForm frm = new IssueWithInPlaceForm(color, size, article, Int32.Parse(balance));
 
-            itemDataGridView.DataSource = getItems();
-            setProgress();
+                    frm.ShowDialog(this);
+
+                    itemDataGridView.DataSource = getItems();
+                    setProgress();
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    MessageBox.Show("You can't issue with Issued place is selected!", "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("You can't issue with Issued place is selected!", "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -820,12 +1478,7 @@ namespace IsabellaItems
         private void searchArticleTxt_TextChanged(object sender, EventArgs e)
         {
             string place = "Pallekale";
-            //DateTime date = datePicker.Value;
-            string qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
-                "FROM received r " +
-                "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
-                "INNER JOIN batch b on r.batch_id=b.batch_id " +
-                "GROUP BY r.batch_id";
+            string qry = "";
 
             Object tmpPlaceObj = issuedCmb.SelectedItem;
             string color = searchColortxt.Text;
@@ -1113,6 +1766,37 @@ namespace IsabellaItems
                     "GROUP BY r.batch_id";
                 }
             }
+            else if ((tmpPlaceObj != null) && (!color.Equals("")) && (!size.Equals("")) && (!article.Equals("")))
+            {
+                place = issuedCmb.SelectedItem.ToString();
+
+                if (place.Equals("All"))
+                {
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                    "FROM received r " +
+                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.article LIKE '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' " +
+                    "GROUP BY r.batch_id";
+                }
+                else
+                {
+                    int place_id = 1;
+                    MySqlDataReader reader = DBConnection.getData("select * from place where place='" + place + "'");
+
+                    while (reader.Read())
+                    {
+                        place_id = reader.GetInt32("place_id");
+                    }
+
+                    reader.Close();
+
+                    qry = "SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued " +
+                    "FROM received r " +
+                    "LEFT JOIN (SELECT batch_id, place_id, SUM(issuedQty) as issued FROM issued where place_id=" + place_id + " GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                    "INNER JOIN batch b on r.batch_id=b.batch_id where i.place_id=" + place_id + " and b.article LIKE '%" + article + "' and b.size='" + size + "' and b.color='" + color + "' " +
+                    "GROUP BY r.batch_id";
+                }
+            }
 
             try
             {
@@ -1166,6 +1850,125 @@ namespace IsabellaItems
             else
             {
                 MessageBox.Show("Please enter the new place name!", "Add In place", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void issueItemsBtn_Click(object sender, EventArgs e)
+        {
+            openFileDialog2.Filter = "Excel Workbook|*.xlsx|Excel Workbook 2003|*.xls";
+            openFileDialog2.ShowDialog();
+        }
+
+        private void openFileDialog2_FileOk(object sender, CancelEventArgs e)
+        {
+            int tracker = 1;
+
+            try
+            {
+                string name = openFileDialog2.SafeFileName;
+
+                if (name.Contains(".xlsx") || name.Contains(".xls"))
+                {
+                    _Application excel = new _Excel.Application();
+                    Workbook wb;
+                    Worksheet ws;
+
+                    string path = "D:/PackingSocks/IssueFiles/" + name;
+
+                    wb = excel.Workbooks.Open(path);
+                    ws = wb.Worksheets[1];
+
+                    int x = 2;
+
+                    Place inPlace = new Place();
+                    string article, size, color;
+                    double qty = 0;
+
+                    if (ws.Cells[2, 6].Value2 == null)
+                    {
+                        MessageBox.Show("First row of the excell sheet must have a in place!", "File Reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        while (ws.Cells[x, 1].Value2 != null)
+                        {
+                            tracker++;
+
+                            if (ws.Cells[x, 1].Value2 is double)
+                            {
+                                article = "" + (int)ws.Cells[x, 1].Value2;
+                            }
+                            else
+                            {
+                                article = ws.Cells[x, 1].Value2;
+                            }
+
+                            if (ws.Cells[x, 2].Value2 is double)
+                            {
+                                color = "" + (int)ws.Cells[x, 2].Value2;
+                            }
+                            else
+                            {
+                                color = ws.Cells[x, 2].Value2;
+                            }
+
+                            if (ws.Cells[x, 3].Value2 is double)
+                            {
+                                size = "" + (int)ws.Cells[x, 3].Value2;
+                            }
+                            else
+                            {
+                                size = ws.Cells[x, 3].Value2;
+                            }
+
+                            qty = ws.Cells[x, 5].Value2;
+
+                            if (ws.Cells[x, 6].Value2 != null)
+                            {
+                                if (ws.Cells[x, 6].Value2 is double)
+                                    inPlace.SetPlace("" + (int)ws.Cells[x, 6].Value2);
+                                else
+                                    inPlace.SetPlace(ws.Cells[x, 6].Value2);
+                            }
+
+                            try
+                            {
+                                int stat = Database.issueFromExcel(inPlace.GetPlace(), color, size, article, (int)qty);
+
+                                if (stat == 1)
+                                {
+                                    MessageBox.Show("The combination of article, color and size doesn't exists!\nExcel sheet line no " + tracker, "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    break;
+                                }
+                                else if (stat == 2)
+                                {
+                                    MessageBox.Show("The issueing place doesn't exists!\nExcel sheet line no " + tracker + " " + inPlace.GetPlace(), "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    break;
+                                }
+                                else if (stat == 2)
+                                {
+                                    MessageBox.Show("The issueing quantity is not available!\nExcel sheet line no " + tracker, "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    break;
+                                }
+
+                                setProgress();
+
+                                x++;
+                            }
+                            catch (Exception exc)
+                            {
+                                MessageBox.Show("Something wrong with the qty cell in excel file line no " + tracker + "!\n" + exc, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+
+                        itemDataGridView.DataSource = getItems();
+                        setProgress();
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("Something wrong with the excel file line no " + tracker + "!\n" + exception, "File reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

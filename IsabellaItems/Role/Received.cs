@@ -9,28 +9,26 @@ namespace IsabellaItems.Role
     class Received
     {
         private Batch batch;
+        private Place place;
         private DateTime date;
         private int receivedQty;
 
-        public Received(Batch batch, DateTime date, int receivedQty)
+        public Received(DateTime date, int receivedQty, Batch batch, Place place)
         {
-            this.batch = batch;
-            this.date = date;
-            this.receivedQty = receivedQty;
+            Date = date;
+            ReceivedQty = receivedQty;
+            Batch = batch;
+            Place = place;
         }
 
         public Received(Batch batch)
         {
-            this.batch = batch;
+            this.Batch = batch;
         }
-
-        public void issue()
-        {
-
-        }
-
+        
         public DateTime Date { get => date; set => date = value; }
         public int ReceivedQty { get => receivedQty; set => receivedQty = value; }
-        internal Batch Batch { get => batch; set => batch = value; }
+        public Batch Batch { get => batch; set => batch = value; }
+        public Place Place { get => place; set => place = value; }
     }
 }

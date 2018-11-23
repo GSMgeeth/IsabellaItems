@@ -12,13 +12,13 @@ namespace IsabellaItems.Role
         private Place place;
         private DateTime date;
         private int issuedQty;
-
+        
         public Issued(Batch batch, Place place, DateTime date, int issuedQty)
         {
-            this.batch = batch;
-            this.place = place;
-            this.date = date;
-            this.issuedQty = issuedQty;
+            Date = date;
+            IssuedQty = issuedQty;
+            Batch = batch;
+            Place = place;
         }
 
         public DateTime Date { get => date; set => date = value; }
