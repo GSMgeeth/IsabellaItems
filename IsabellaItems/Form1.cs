@@ -32,6 +32,7 @@ namespace IsabellaItems
 
             dataGridViewIssuedPlace.Columns[0].Visible = false;
             dataGridViewInPlace.Columns[0].Visible = false;
+            button3.Visible = false;
 
             fillIssuedCmb();
             fillInCmb();
@@ -356,7 +357,7 @@ namespace IsabellaItems
 
         private void searchBtn_Click(object sender, EventArgs e)
         {
-            string place = "Pallekale";
+            string place = "";
             string inPlace = "";
             string qry = "";
 
@@ -1307,7 +1308,7 @@ namespace IsabellaItems
             searchSizeTxt.Clear();
             searchArticleTxt.Clear();
 
-            button3.Visible = true;
+            //button3.Visible = true;
 
             itemDataGridView.DataSource = getItems();
         }
@@ -1358,9 +1359,9 @@ namespace IsabellaItems
 
         private void itemDataGridView_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            Object tmpInPlaceObj = inCmb.SelectedItem;
+            Object tmpIssuedPlaceObj = issuedCmb.SelectedItem;
 
-            if (tmpInPlaceObj == null)
+            if (tmpIssuedPlaceObj == null)
             {
                 try
                 {
@@ -1378,7 +1379,38 @@ namespace IsabellaItems
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    MessageBox.Show("You can't issue with Issued place is selected!", "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    string color = itemDataGridView.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    string size = itemDataGridView.Rows[e.RowIndex].Cells[1].Value.ToString();
+                    string article = itemDataGridView.Rows[e.RowIndex].Cells[2].Value.ToString();
+
+                    MySqlDataReader reader = DBConnection.getData("SELECT b.color, b.size, b.article, SUM(r.receivedQty) as received, IFNULL(i.issued, 0) as issued, IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                                                                    "FROM received r " +
+                                                                    "LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued GROUP BY batch_id) i on r.batch_id=i.batch_id " +
+                                                                    "INNER JOIN batch b on r.batch_id=b.batch_id where b.size='" + size + "' and b.color='" + color + "' and b.article like '%" + article + "' " +
+                                                                    "GROUP BY r.batch_id");
+                    if (reader.Read())
+                    {
+                        int balance = reader.GetInt32("balance");
+
+                        reader.Close();
+
+                        if (balance > 0)
+                        {
+                            IssueWithInPlaceForm frm = new IssueWithInPlaceForm(color, size, article, balance);
+
+                            frm.ShowDialog(this);
+
+                            itemDataGridView.DataSource = getItems();
+                            setProgress();
+                        }
+                    }
+
+                    if (!reader.IsClosed)
+                        reader.Close();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Something went wrong!", "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             else
@@ -1389,16 +1421,17 @@ namespace IsabellaItems
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string qry = "select SUM(r.receivedQty) as received, IFNULL(ip.issuedQty, 0) as pallekale, IFNULL(ih.issuedQty, 0) as henz, IFNULL((SUM(r.receivedQty) - (IFNULL(ip.issuedQty, 0) + IFNULL(ih.issuedQty, 0))), 0) as balance " +
-                "from received r " +
-                "join (select SUM(issuedQty) as issuedQty from issued where place_id=1) ip " +
-                "join (select SUM(issuedQty) as issuedQty from issued where place_id=2) ih;";
+            //string qry = "select SUM(r.receivedQty) as received, IFNULL(ip.issuedQty, 0) as pallekale, IFNULL(ih.issuedQty, 0) as henz, IFNULL((SUM(r.receivedQty) - (IFNULL(ip.issuedQty, 0) + IFNULL(ih.issuedQty, 0))), 0) as balance " +
+            //    "from received r " +
+            //    "join (select SUM(issuedQty) as issuedQty from issued where place_id=1) ip " +
+            //    "join (select SUM(issuedQty) as issuedQty from issued where place_id=2) ih;";
 
-            string qryTmp = "SELECT COUNT(i.item_id) as itemQty, t.place as place FROM issued b " +
-                            "LEFT JOIN place t ON b.place_id=t.place_id " +
-                            "INNER JOIN item i on b.bag_id=i.bag_id " +
-                            "WHERE issued=1 " +
-                            "GROUP BY b.place_id;";
+            //string qryTmp = "SELECT COUNT(i.item_id) as itemQty, t.place as place FROM issued b " +
+            //                "LEFT JOIN place t ON b.place_id=t.place_id " +
+            //                "INNER JOIN item i on b.bag_id=i.bag_id " +
+            //                "WHERE issued=1 " +
+            //                "GROUP BY b.place_id;";
+
             string qryRec = "select SUM(receivedQty) as received from received;";
 
             string qryIss = "select p.place, IFNULL(SUM(i.issuedQty), 0) as issued" +
@@ -1881,12 +1914,17 @@ namespace IsabellaItems
                     int x = 2;
 
                     Place inPlace = new Place();
+                    Place outPlace = new Place();
                     string article, size, color;
                     double qty = 0;
 
                     if (ws.Cells[2, 6].Value2 == null)
                     {
                         MessageBox.Show("First row of the excell sheet must have a in place!", "File Reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else if (ws.Cells[2, 7].Value2 == null)
+                    {
+                        MessageBox.Show("First row of the excell sheet must have a issueing place!", "File Reader", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
@@ -1931,9 +1969,17 @@ namespace IsabellaItems
                                     inPlace.SetPlace(ws.Cells[x, 6].Value2);
                             }
 
+                            if (ws.Cells[x, 7].Value2 != null)
+                            {
+                                if (ws.Cells[x, 7].Value2 is double)
+                                    outPlace.SetPlace("" + (int)ws.Cells[x, 7].Value2);
+                                else
+                                    outPlace.SetPlace(ws.Cells[x, 7].Value2);
+                            }
+
                             try
                             {
-                                int stat = Database.issueFromExcel(inPlace.GetPlace(), color, size, article, (int)qty);
+                                int stat = Database.issueFromExcel(inPlace.GetPlace(), outPlace.GetPlace(), color, size, article, (int)qty);
 
                                 if (stat == 1)
                                 {
@@ -1945,9 +1991,14 @@ namespace IsabellaItems
                                     MessageBox.Show("The issueing place doesn't exists!\nExcel sheet line no " + tracker + " " + inPlace.GetPlace(), "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     break;
                                 }
-                                else if (stat == 2)
+                                else if (stat == 3)
                                 {
                                     MessageBox.Show("The issueing quantity is not available!\nExcel sheet line no " + tracker, "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    break;
+                                }
+                                else if (stat == 4)
+                                {
+                                    MessageBox.Show("The received place doesn't exists!\nExcel sheet line no " + tracker + " " + inPlace.GetPlace(), "Issue Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     break;
                                 }
 

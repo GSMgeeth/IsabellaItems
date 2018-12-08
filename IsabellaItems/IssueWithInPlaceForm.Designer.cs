@@ -42,13 +42,13 @@
             this.sizeTxtBox = new System.Windows.Forms.TextBox();
             this.totBalTxtBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.issueItemsBtn = new System.Windows.Forms.Button();
+            this.IssueingPlaceCmb = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.totQtyTxtBox = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.IssueingPlaceCmb = new System.Windows.Forms.ComboBox();
+            this.issueItemsBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.issueingItemsDataGrid)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -63,9 +63,9 @@
             this.issueingItemsDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.issueingItemsDataGrid.Location = new System.Drawing.Point(13, 229);
             this.issueingItemsDataGrid.Name = "issueingItemsDataGrid";
-            this.issueingItemsDataGrid.ReadOnly = true;
             this.issueingItemsDataGrid.Size = new System.Drawing.Size(902, 273);
             this.issueingItemsDataGrid.TabIndex = 0;
+            this.issueingItemsDataGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.issueingItemsDataGrid_CellValueChanged);
             // 
             // label1
             // 
@@ -198,14 +198,32 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Issue";
             // 
-            // issueItemsBtn
+            // IssueingPlaceCmb
             // 
-            this.issueItemsBtn.Location = new System.Drawing.Point(288, 111);
-            this.issueItemsBtn.Name = "issueItemsBtn";
-            this.issueItemsBtn.Size = new System.Drawing.Size(117, 27);
-            this.issueItemsBtn.TabIndex = 0;
-            this.issueItemsBtn.Text = "Issue Items";
-            this.issueItemsBtn.UseVisualStyleBackColor = true;
+            this.IssueingPlaceCmb.FormattingEnabled = true;
+            this.IssueingPlaceCmb.Location = new System.Drawing.Point(148, 31);
+            this.IssueingPlaceCmb.Name = "IssueingPlaceCmb";
+            this.IssueingPlaceCmb.Size = new System.Drawing.Size(158, 24);
+            this.IssueingPlaceCmb.TabIndex = 18;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(131, 37);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(12, 16);
+            this.label11.TabIndex = 17;
+            this.label11.Text = ":";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(6, 33);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(78, 20);
+            this.label12.TabIndex = 16;
+            this.label12.Text = "Issue To";
             // 
             // totQtyTxtBox
             // 
@@ -235,32 +253,15 @@
             this.label10.TabIndex = 13;
             this.label10.Text = "Selected Qty";
             // 
-            // label11
+            // issueItemsBtn
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(131, 37);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(12, 16);
-            this.label11.TabIndex = 17;
-            this.label11.Text = ":";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(6, 33);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(78, 20);
-            this.label12.TabIndex = 16;
-            this.label12.Text = "Issue To";
-            // 
-            // IssueingPlaceCmb
-            // 
-            this.IssueingPlaceCmb.FormattingEnabled = true;
-            this.IssueingPlaceCmb.Location = new System.Drawing.Point(148, 31);
-            this.IssueingPlaceCmb.Name = "IssueingPlaceCmb";
-            this.IssueingPlaceCmb.Size = new System.Drawing.Size(158, 24);
-            this.IssueingPlaceCmb.TabIndex = 18;
+            this.issueItemsBtn.Location = new System.Drawing.Point(288, 111);
+            this.issueItemsBtn.Name = "issueItemsBtn";
+            this.issueItemsBtn.Size = new System.Drawing.Size(117, 27);
+            this.issueItemsBtn.TabIndex = 0;
+            this.issueItemsBtn.Text = "Issue Items";
+            this.issueItemsBtn.UseVisualStyleBackColor = true;
+            this.issueItemsBtn.Click += new System.EventHandler(this.issueItemsBtn_Click);
             // 
             // IssueWithInPlaceForm
             // 

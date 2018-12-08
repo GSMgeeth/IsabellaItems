@@ -11,10 +11,11 @@ namespace IsabellaItems.Core
 {
     class Database
     {
-        public static void issue(string place, string color, string size, string article, int qty)
+        public static void issue(string inPlace, string place, string color, string size, string article, int qty)
         {
             int batch_id = 1;
             int place_id = 1;
+            int in_place_id = 1;
 
             MySqlDataReader reader = DBConnection.getData("select batch_id from batch where color='" + color + "' and size='" + size + "' and article='" + article + "'");
 
@@ -36,7 +37,16 @@ namespace IsabellaItems.Core
 
                 readerPlace.Close();
 
-                reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
+                readerPlace = DBConnection.getData("select in_place_id from in_place where in_place_name='" + inPlace + "'");
+
+                while (readerPlace.Read())
+                {
+                    in_place_id = readerPlace.GetInt32(0);
+                }
+
+                readerPlace.Close();
+
+                reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id + " and in_place_id=" + in_place_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
 
                 if (reader.HasRows)
                 {
@@ -51,21 +61,22 @@ namespace IsabellaItems.Core
 
                     reader.Close();
 
-                    DBConnection.updateDB("update issued set issuedQty=" + newQty + " where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
+                    DBConnection.updateDB("update issued set issuedQty=" + newQty + " where place_id=" + place_id + " and in_place_id=" + in_place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
                 }
                 else
                 {
                     reader.Close();
 
-                    DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                    DBConnection.updateDB("insert into issued (place_id, in_place_id, batch_id, date, issuedQty) values (" + place_id + ", " + in_place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
                 }
             }
         }
 
-        public static int issueFromExcel(string place, string color, string size, string article, int qty)
+        public static int issueFromExcel(string inPlace, string place, string color, string size, string article, int qty)
         {
             int batch_id = 1;
             int place_id = 1;
+            int in_place_id = 1;
             int stat = 0;
 
             MySqlDataReader reader = DBConnection.getData("select batch_id from batch where color='" + color + "' and size='" + size + "' and article='" + article + "'");
@@ -86,46 +97,62 @@ namespace IsabellaItems.Core
                     place_id = readerPlace.GetInt32(0);
 
                     readerPlace.Close();
-                    
-                    MySqlDataReader readerCheck = DBConnection.getData("SELECT IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance FROM received r LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued " +
-                                                                       "WHERE batch_id=" + batch_id + " GROUP BY batch_id) i on i.batch_id=r.batch_id GROUP BY r.batch_id;");
 
-                    if (readerCheck.HasRows)
+                    readerPlace = DBConnection.getData("select in_place_id from in_place where in_place_name='" + inPlace + "'");
+
+                    if (readerPlace.Read())
                     {
-                        while (readerCheck.Read())
+                        in_place_id = readerPlace.GetInt32(0);
+
+                        readerPlace.Close();
+
+                        MySqlDataReader readerCheck = DBConnection.getData("SELECT IFNULL((SUM(r.receivedQty) - IFNULL(i.issued, 0)), 0) as balance " +
+                                                                          "FROM received r LEFT JOIN (SELECT batch_id, SUM(issuedQty) as issued FROM issued " +
+                                                                          "WHERE batch_id=" + batch_id + " and in_place_id=" + in_place_id + " GROUP BY batch_id) i on i.batch_id=r.batch_id INNER JOIN in_place p ON p.in_place_id=r.in_place_id " +
+                                                                          "WHERE r.batch_id=" + batch_id + " and r.in_place_id=" + in_place_id + " GROUP BY r.batch_id, p.in_place_name;");
+
+                        if (readerCheck.HasRows)
                         {
-                            if (readerCheck.GetInt32("balance") > 0)
+                            while (readerCheck.Read())
                             {
-                                reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
-
-                                if (reader.HasRows)
+                                if (readerCheck.GetInt32("balance") > 0)
                                 {
-                                    int currentQty = 0;
+                                    reader = DBConnection.getData("select * from issued where place_id=" + place_id + " and in_place_id=" + in_place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
 
-                                    while (reader.Read())
+                                    if (reader.HasRows)
                                     {
-                                        currentQty = reader.GetInt32("issuedQty");
+                                        int currentQty = 0;
+
+                                        while (reader.Read())
+                                        {
+                                            currentQty = reader.GetInt32("issuedQty");
+                                        }
+
+                                        int newQty = currentQty + qty;
+
+                                        reader.Close();
+
+                                        DBConnection.updateDB("update issued set issuedQty=" + newQty + " where place_id=" + place_id + " and in_place_id=" + in_place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
                                     }
+                                    else
+                                    {
+                                        reader.Close();
 
-                                    int newQty = currentQty + qty;
-
-                                    reader.Close();
-
-                                    DBConnection.updateDB("update issued set issuedQty=" + newQty + " where place_id=" + place_id + " and batch_id=" + batch_id + " and date='" + DateTime.Now.ToString("yyyy/M/d") + "'");
+                                        DBConnection.updateDB("insert into issued (place_id, in_place_id, batch_id, date, issuedQty) values (" + place_id + ", " + in_place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                                    }
                                 }
                                 else
                                 {
-                                    reader.Close();
-
-                                    DBConnection.updateDB("insert into issued (place_id, batch_id, date, issuedQty) values (" + place_id + ", " + batch_id + ", '" + DateTime.Now.ToString("yyyy/M/d") + "', " + qty + ")");
+                                    readerCheck.Close();
+                                    stat = 3;
                                 }
                             }
-                            else
-                            {
-                                readerCheck.Close();
-                                stat = 3;
-                            }
                         }
+                    }
+                    else
+                    {
+                        readerPlace.Close();
+                        stat = 4;
                     }
                 }
                 else
